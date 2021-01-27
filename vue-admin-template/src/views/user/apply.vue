@@ -87,7 +87,7 @@
     methods: {
 
       getList() {
-        user.getMerchant(this.cur, this.status).then(response => {
+        user.getApply(this.cur, this.status).then(response => {
           this.reviewList = response.data.data
           this.total = response.data.total
         })

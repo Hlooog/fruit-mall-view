@@ -65,16 +65,14 @@
                 <p>确定设为客服？</p>
                 <div style="text-align: right; margin: 0">
                   <el-button size="mini" type="text" @click="uid = 0">取消</el-button>
-                  <el-button type="primary" size="mini" @click="cancelMerchant">确定</el-button>
+                  <el-button type="primary" size="mini" @click="setService">确定</el-button>
                 </div>
-                <el-button style="margin-left: 15px" slot="reference" type="success"
-                           @click="isCancelMerchant(scope.row.id)">取消商家身份
-                </el-button>
+                <el-button style="margin-left: 15px" slot="reference" type="success" @click="isSetService(scope.row.id)">设为客服</el-button>
               </el-popover>
             </div>
             <div v-else>
               <el-button disabled type="danger">封号</el-button>
-              <el-button disabled type="success">取消商家身份</el-button>
+              <el-button disabled type="success">设为客服</el-button>
             </div>
           </template>
         </el-table-column>
@@ -110,11 +108,9 @@
 </template>
 
 <script>
-  import user from "@/api/user";
+  import user from '@/api/user'
 
   export default {
-    name: "merchant",
-
     created() {
       this.init()
     },
@@ -135,16 +131,15 @@
         uid: 0
       }
     },
-
     methods: {
       init() {
-        user.getMerchantList(this.page).then(response => {
+        user.getGeneralList(this.page).then(response => {
           this.userList = response.data.data
           this.total = response.data.total
         })
       },
 
-      check(createTime, banTime) {
+      check(createTime,banTime){
         let now = new Date()
         let create = new Date(createTime)
         let ban = new Date(banTime)
@@ -176,12 +171,12 @@
       },
       ban() {
         if (this.days != -1) {
-          user.banUser(this.userId, this.days).then(() => {
+          user.banUser(this.userId,this.days).then(() => {
             this.days = -1
             this.init()
           })
           this.banVisible = false
-        } else {
+        }else {
           this.$message({
             type: "warning",
             message: '请先选择封禁天数'
@@ -192,13 +187,17 @@
         this.days = -1
         this.banVisible = false
       },
-      isCancelMerchant(id) {
+
+      isSetService(id) {
         this.uid = id
       },
-      cancelMerchant() {
-      },
-    },
-
+      setService(){
+        user.setService(this.uid).then(() => {
+          this.uid = 0
+          this.init()
+        })
+      }
+    }
   }
 </script>
 

@@ -61,21 +61,21 @@ export const constantRoutes = [
     meta: {title: '用户管理', icon: 'form'},
     children: [
       {
-        path: 'index',
-        name: '普通用户管理',
-        component: () => import('@/views/user/index'),
+        path: 'general',
+        name: 'General',
+        component: () => import('@/views/user/general'),
         meta: {title: '普通用户管理', icon: 'el-icon-s-custom'}
       },
       {
         path: 'merchant',
-        name: '商户管理',
+        name: 'Merchant',
         component: () => import('@/views/user/merchant'),
         meta: {title: '商户管理', icon: 'el-icon-user'}
       },
       {
-        path: 'application',
-        name: "商家审核",
-        component: () => import('@/views/user/application'),
+        path: 'apply',
+        name: "Apply",
+        component: () => import('@/views/user/apply'),
         meta: {title: '商家审核', icon: 'el-icon-info'},
       }
     ]

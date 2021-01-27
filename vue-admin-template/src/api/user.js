@@ -29,9 +29,9 @@ export function logout(token) {
 }
 
 export default {
-  page(page) {
+  getGeneralList(page) {
     return request({
-      url: '/user/page',
+      url: '/user/page/general',
       method: 'get',
       params:{
         cur: page.cur,
@@ -41,10 +41,44 @@ export default {
       }
     })
   },
-  deleteUser(id){
+  banUser(id,days){
     return request({
-      url: '/user/ban/' + id,
-      method: 'delete'
+      url: '/user/ban/general',
+      method: 'put',
+      params: {
+        id: id,
+        days: days,
+      }
+    })
+  },
+  setService(id){
+    return request({
+      url: '/user/service/' + id,
+      method: 'put',
+    })
+  },
+
+  getMerchantList(page){
+    return request({
+      url: '/user/page/merchant',
+      method: 'get',
+      params:{
+        cur: page.cur,
+        startTime: page.startTime,
+        endTime: page.endTime,
+        key: page.key,
+      }
+    })
+  },
+
+  banMerchant(id,days){
+    return request({
+      url: '/user/ban/merchant',
+      method: 'put',
+      params: {
+        id: id,
+        days: days,
+      }
     })
   },
 
@@ -54,7 +88,7 @@ export default {
       method: 'put',
     })
   },
-  getMerchant(cur,status){
+  getApply(cur,status){
     return request({
       url: '/merchantInfo/list/review',
       method: 'get',
