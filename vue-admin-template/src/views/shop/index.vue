@@ -1,132 +1,127 @@
 <template>
   <div>
-    <el-form :inline="true" :model="page" class="demo-form-inline" style="margin-left: 30px; margin-top: 15px">
-      <el-form-item label="查询关键字">
-        <el-input v-model="page.key" placeholder="关键字"></el-input>
-      </el-form-item>
-      <el-form-item label="创建时间范围">
+    <el-row style="margin-top: 15px;height: 50px">
+      <el-col :span="1" style="height: 1px"></el-col>
+      <el-col :span="6">
+        <el-input style="width: 200px"
+                  @change="keyChange"
+                  v-model="page.key"
+                  placeholder="用户id、店铺id和店铺名"></el-input>
+      </el-col>
+      <el-col :span="8">
         <el-date-picker
-          v-model="dateTime"
-          type="datetimerange"
-          :picker-options="pickerOptions"
+          style="width: 80%"
+          v-model="date"
+          type="daterange"
           range-separator="至"
           start-placeholder="开始日期"
           end-placeholder="结束日期"
-          value-format="yyyy-MM-dd HH:mm:ss"
-          @change="timeChange"
-          align="right">
+          format="yyyy-MM-dd"
+          value-format="yyyy-MM-dd"
+          clearable
+          @change="dateChange">
         </el-date-picker>
-      </el-form-item>
-      <el-cascader
-        placeholder="输入你要搜索的城市"
-        :options="cityList"
-        filterable
-        clearable
-        :props="{ checkStrictly: true}"
-        @change="cityChange"></el-cascader>
-      <el-form-item>
-        <el-button type="primary" @click="onSubmit">查询</el-button>
-      </el-form-item>
-    </el-form>
-    <el-table
-      :data="shopList"
-      style="width: 100%">
-      <el-table-column
-        prop="ownerName"
-        label="店主"
-        width="80">
-      </el-table-column>
-      <el-table-column
-        prop="shopName"
-        label="店名">
-      </el-table-column>
-      <el-table-column
-        label="描述">
-        <template slot-scope="scope">
-          <span>
-            {{scope.row.description.length > 10 ? scope.row.description.slice(0,11) + '...' : scope.row.description}}
-          </span>
-        </template>
-      </el-table-column>
-      <el-table-column
-        prop="heat"
-        label="关注人数"
-        width="80">
-      </el-table-column>
-      <el-table-column
-        prop="cityName"
-        label="所在城市"
-        width="80">
-      </el-table-column>
-      <el-table-column
-        prop="violation"
-        label="违规次数"
-        width="80">
-      </el-table-column>
-      <el-table-column
-        label="解封时间"
-        width="100">
-        <template slot-scope="scope">
-          <span v-if="compareTime(scope.row.banTime,scope.row.createTime) === 0">{{scope.row.banTime}}</span>
-          <span v-if="compareTime(scope.row.banTime,scope.row.createTime) === 1">未封店</span>
-          <span v-if="compareTime(scope.row.banTime,scope.row.createTime) === -1">永久封店</span>
-        </template>
-      </el-table-column>
-      <el-table-column
-        prop="createTime"
-        label="创建时间"
-        width="100">
-      </el-table-column>
-      <el-table-column
-        prop="updateTime"
-        label="修改时间"
-        width="100">
-      </el-table-column>
-      <el-table-column
-        label="操作">
-        <template slot-scope="scope">
-          <el-button v-if="compareTime(scope.row.banTime,scope.row.createTime) === 1" type="danger" round size="small"
-                     @click="openDialog(scope.row.ownerId,scope.row.shopId)">封店
-          </el-button>
-          <el-button v-else type="danger" round size="small" disabled>封店</el-button>
+      </el-col>
+      <el-col :span="4">
+        <el-cascader
+          :options="cityList"
+          :props="{ checkStrictly: true }"
+          @change="cityIdChange"
+          clearable
+          filterable></el-cascader>
+      </el-col>
+    </el-row>
+    <el-row>
+      <el-table
+        style="width: 100%"
+        :data="shopList">
+        <el-table-column
+          prop="id"
+          label="店铺id"
+          width="80">
+        </el-table-column>
+        <el-table-column
+          prop="ownerId"
+          label="店主id"
+          width="80">
+        </el-table-column>
+        <el-table-column
+          prop="ownerName"
+          label="店主姓名"
+          width="80">
+        </el-table-column>
+        <el-table-column
+          prop="shopName"
+          label="店铺名"
+          width="120">
+        </el-table-column>
+        <el-table-column
+          prop="cityName"
+          label="所在城市"
+          width="80">
+        </el-table-column>
+        <el-table-column
+          prop="heat"
+          label="收藏人数"
+          width="80"
+        ></el-table-column>
+        <el-table-column
+          prop="violation"
+          label="违规次数"
+          width="80">
+        </el-table-column>
+        <el-table-column
+          prop="createTime"
+          label="创建时间"
+          width="160">
+        </el-table-column>
+        <el-table-column
+          prop="banTime"
+          label="解禁时间"
+          width="160">
+        </el-table-column>
+        <el-table-column
+          label="操作">
+          <template slot-scope="scope">
+            <div v-if="check(scope.row.createTime,scope.row.banTime)">
+              <el-button type="danger" @click="isBan(scope.row.id)">封店</el-button>
+              <el-button type="text" @click="enterShop(scope.row.id,scope.row.shopName)">店内详情</el-button>
+            </div>
+            <div v-else>
+              <el-button disabled type="danger">封店</el-button>
+              <el-button disabled type="text">店内详情</el-button>
+            </div>
+          </template>
+        </el-table-column>
+      </el-table>
+    </el-row>
 
-          <el-button v-if="compareTime(scope.row.banTime,scope.row.createTime) === -1" type="text" size="small"
-                     disabled>店内商品
-          </el-button>
-          <el-button v-else type="text" size="small" @click="showFruit(scope.row.shopId,scope.row.shopName)">店内商品</el-button>
-        </template>
-      </el-table-column>
-    </el-table>
+    <el-row style="width: 100%">
+      <el-pagination
+        style="margin-left: 30%"
+        background
+        :current-page.sync="page.cur"
+        @current-change="init"
+        layout="prev, pager, next"
+        :total="total">
+      </el-pagination>
+    </el-row>
 
     <el-dialog
-      title="请选择禁言时间"
-      :visible.sync="dialogVisible"
-      width="30%"
-      :before-close="handleClose">
-      <el-radio v-model="degree" label="1">一天</el-radio>
-      <el-radio v-model="degree" label="2">三天</el-radio>
-      <el-radio v-model="degree" label="3">七天</el-radio>
-      <el-radio v-model="degree" label="4">三十天</el-radio>
-      <el-radio v-model="degree" label="5">一年</el-radio>
-      <el-radio v-model="degree" label="6">永久</el-radio>
+      title="选择封号时间"
+      :visible.sync="banVisible"
+      width="30%">
+      <el-radio v-model="days" label="0">1天</el-radio>
+      <el-radio v-model="days" label="1">3天</el-radio>
+      <el-radio v-model="days" label="2">7天</el-radio>
+      <el-radio v-model="days" label="3">30天</el-radio>
+      <el-radio v-model="days" label="4">365天</el-radio>
+      <el-radio v-model="days" label="5">永久</el-radio>
       <span slot="footer" class="dialog-footer">
-        <el-button @click="dialogVisible = false">取 消</el-button>
-        <el-button type="primary" @click="mute">确 定</el-button>
-      </span>
+    <el-button @click="cancelBan">取 消</el-button>
+    <el-button type="primary" @click="ban">确 定</el-button>
+  </span>
     </el-dialog>
-
-    <el-pagination
-      background
-      style="margin-left: 400px;margin-top: 30px;margin-bottom: 60px"
-      layout="sizes,prev, pager, next"
-      @current-change="curChange"
-      @size-change="sizeChange"
-      :total="totalCount"
-      :current-page="page.cur"
-      :page-size="page.size"
-      :page-sizes="[5,10,15,20]"
-    >
-    </el-pagination>
   </div>
 </template>
 
@@ -136,128 +131,110 @@
 
   export default {
     created() {
+      let c = this.$route.query.cur
+      if (c){
+        this.page.cur = c
+      }
       this.getCityInfo()
-      this.getShopList(this.page)
+      this.init()
     },
+    computed:{
 
+    },
+    data() {
+      return {
+        cityList: [],
+        shopList: [],
+        total: 10,
+        page: {
+          cur: 1,
+          key: '',
+          startTime: '',
+          endTime: '',
+          cityId: 0,
+        },
+        date: [],
+        sid: 0,
+        banVisible: false,
+        days: -1
+      }
+    },
     methods: {
-      compareTime(time, createTime) {
-        let now = new Date()
-        let new_time = new Date(time)
-        let create_time = new Date(createTime)
-        if (create_time.getTime() > new_time.getTime()) {
-          return -1
-        }
-        if (new_time.getTime() > now.getTime()) {
-          return 0
-        } else {
-          return 1
-        }
+      init(){
+        shop.page(this.page).then(response => {
+          this.shopList = response.data.data
+          this.total = response.data.total
+        })
       },
-
       getCityInfo() {
         city.getInfo().then(response => {
           this.cityList = response.data
         })
       },
-      cityChange(arr) {
-        this.page.cityId = arr.length == 2 ? arr[1] : arr[0];
+      keyChange(){
+        this.page.cur = 1
+        this.init()
       },
-      timeChange() {
-        if (this.dateTime == null) {
-          this.page.startTime = null
-          this.page.endTime = null
+      dateChange(){
+        this.page.cur = 1
+        if (this.date == null) {
+          this.page.startTime = ''
+          this.page.endTime = ''
+        } else{
+          this.page.startTime = this.date[0]
+          this.page.endTime = this.date[1]
+        }
+        this.init()
+      },
+      cityIdChange(val){
+        if (val.length == 0) {
+          this.page.cityId = 0
         } else {
-          this.page.startTime = this.dateTime[0]
-          this.page.endTime = this.dateTime[1]
+          this.page.cityId = val[val.length - 1]
+        }
+        this.init()
+      },
+      check(createTime, banTime) {
+        let now = new Date()
+        let create = new Date(createTime)
+        let ban = new Date(banTime)
+        if (ban.getTime() > now.getTime()
+          || ban.getTime() < create.getTime()) {
+          return false
+        } else {
+          return true
         }
       },
-      curChange(cur) {
-        this.page.cur = cur
-        this.getShopList(this.page)
+      isBan(id){
+        this.sid = id
+        this.banVisible = true
       },
-      sizeChange(size) {
-        this.page.size = size
-        this.getShopList(this.page)
-      },
-      onSubmit() {
-        this.getShopList(this.page)
-      },
-      getShopList(page) {
-        shop.page(page).then(response => {
-          this.shopList = response.data.records
-          this.totalCount = response.data.total
-        })
-      },
-      handleClose(done) {
-        this.$confirm('确认关闭？')
-          .then(_ => {
-            done();
+
+      ban() {
+        if (this.days != -1) {
+          shop.banShop(this.sid,this.days).then(() => {
+            this.days = -1
+            this.init()
           })
-          .catch(_ => {
-          });
+          this.banVisible = false
+        }else {
+          this.$message({
+            type: "warning",
+            message: '请先选择封禁天数'
+          })
+        }
       },
-      openDialog(userId, shopId) {
-        this.dialogVisible = true
-        this.userId = userId
-        this.shopId = shopId
+      cancelBan() {
+        this.days = -1
+        this.banVisible = false
       },
-      mute() {
-        shop.mute(this.shopId, this.degree).then(() => {
-          this.getShopList(this.page)
-          this.dialogVisible = false
-          this.degree = 0
-        })
+
+
+      enterShop: function (id, name) {
+        let c = this.page.cur
+        this.$router.push({path: '/shop/commodity', query: {id: id, name: name, cur: c}})
       },
-      showFruit(shopId,shopName) {
-        this.$router.push({path: '/commodity/index', query: {'shopId': shopId,'shopName':shopName}})
-      }
     },
-
-    data() {
-      return {
-        shopList: [],
-        page: {
-          cur: 1,
-          size: 10,
-        },
-        cityList: [],
-        dateTime: [],
-        pickerOptions: {
-          shortcuts: [{
-            text: '最近一周',
-            onClick(picker) {
-              const end = new Date();
-              const start = new Date();
-              start.setTime(start.getTime() - 3600 * 1000 * 24 * 7);
-              picker.$emit('pick', [start, end]);
-            }
-          }, {
-            text: '最近一个月',
-            onClick(picker) {
-              const end = new Date();
-              const start = new Date();
-              start.setTime(start.getTime() - 3600 * 1000 * 24 * 30);
-              picker.$emit('pick', [start, end]);
-            }
-          }, {
-            text: '最近三个月',
-            onClick(picker) {
-              const end = new Date();
-              const start = new Date();
-              start.setTime(start.getTime() - 3600 * 1000 * 24 * 90);
-              picker.$emit('pick', [start, end]);
-            }
-          }]
-        },
-        totalCount: 10,
-        degree: 0,
-        userId: 0,
-        shopId: 0,
-        dialogVisible: false
-      }
-    }
-
   }
 </script>
 

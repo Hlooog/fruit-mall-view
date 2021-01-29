@@ -7,7 +7,6 @@ export default {
       method: 'get',
       params: {
         cur: page.cur,
-        size: page.size,
         key: page.key,
         startTime: page.startTime,
         endTime: page.endTime,
@@ -15,14 +14,32 @@ export default {
       }
     })
   },
-  mute(shopId, degree) {
+  banShop(id,days){
     return request({
-      url: '/shop/mute',
+      url: '/shop/ban',
       method: 'put',
       params: {
-        shopId: shopId,
-        degree: degree
+        id: id,
+        days: days,
       }
+    })
+  },
+  getInfo(id){
+    return request({
+      url: '/shop/get/' + id,
+      method: 'get',
+    })
+  },
+  getCommodityList(id){
+    return request({
+      url: '/commodity/page/' + id,
+      method: 'get',
+    })
+  },
+  offShelf(id){
+    return request({
+      url: '/commodity/off/' + id,
+      method: 'put',
     })
   }
 }

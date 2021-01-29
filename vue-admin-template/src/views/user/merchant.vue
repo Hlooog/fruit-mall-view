@@ -37,9 +37,14 @@
           width="120">
         </el-table-column>
         <el-table-column
-          prop="nickname"
-          label="用户昵称"
+          prop="name"
+          label="商户名字"
           width="120">
+        </el-table-column>
+        <el-table-column
+          prop="idCard"
+          label="身份证号"
+          width="160">
         </el-table-column>
         <el-table-column
           prop="violation"
@@ -48,11 +53,13 @@
         </el-table-column>
         <el-table-column
           prop="createTime"
-          label="创建时间">
+          label="创建时间"
+          width="150">
         </el-table-column>
         <el-table-column
           prop="banTime"
-          label="解禁时间">
+          label="解禁时间"
+          width="150">
         </el-table-column>
         <el-table-column label="操作">
           <template slot-scope="scope">
@@ -62,7 +69,7 @@
                 placement="top"
                 width="160"
                 :value="uid == scope.row.id">
-                <p>确定设为客服？</p>
+                <p>是否取消该用户商家身份？</p>
                 <div style="text-align: right; margin: 0">
                   <el-button size="mini" type="text" @click="uid = 0">取消</el-button>
                   <el-button type="primary" size="mini" @click="cancelMerchant">确定</el-button>
@@ -176,7 +183,7 @@
       },
       ban() {
         if (this.days != -1) {
-          user.banUser(this.userId, this.days).then(() => {
+          user.banMerchant(this.userId, this.days).then(() => {
             this.days = -1
             this.init()
           })
@@ -196,9 +203,12 @@
         this.uid = id
       },
       cancelMerchant() {
+        user.cancelMerchant(this.uid).then(()=>{
+          this.uid = 0
+          this.init()
+        })
       },
     },
-
   }
 </script>
 

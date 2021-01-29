@@ -13,15 +13,7 @@ export function login(data) {
   })
 }
 
-export function getInfo(token) {
-  return request({
-    url: '/user/na',
-    method: 'get',
-    params: {token}
-  })
-}
-
-export function logout(token) {
+export function logout() {
   return request({
     url: '/logout',
     method: 'get',
@@ -79,6 +71,27 @@ export default {
         id: id,
         days: days,
       }
+    })
+  },
+
+  cancelMerchant(id){
+    return request({
+      url: '/user/cancel/merchant/' + id,
+      method: 'put',
+    })
+  },
+
+  getService() {
+    return request({
+      url: '/user/page/service',
+      method: 'get',
+    })
+  },
+
+  cancelService(id){
+    return request({
+      url: '/user/cancel/service/' + id,
+      method: 'put',
     })
   },
 

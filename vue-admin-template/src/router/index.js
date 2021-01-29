@@ -73,6 +73,12 @@ export const constantRoutes = [
         meta: {title: '商户管理', icon: 'el-icon-user'}
       },
       {
+        path: 'service',
+        name: 'Service',
+        component: () => import('@/views/user/service'),
+        meta: {title: '客服管理', icon: 'el-icon-service'}
+      },
+      {
         path: 'apply',
         name: "Apply",
         component: () => import('@/views/user/apply'),
@@ -90,20 +96,12 @@ export const constantRoutes = [
         name: 'Index',
         component: () => import('@/views/shop/index'),
         meta: {title: '店铺管理', icon: 'el-icon-shopping-bag-1'}
-      }
-    ]
-  },
-
-  {
-    path: '/commodity',
-    component: Layout,
-    hidden: true,
-    children: [
+      },
       {
-        path: 'index',
-        name: '商品管理',
-        component: () => import('@/views/commodity/index'),
-        meta: {title: '商品管理', icon: 'el-icon-shopping-bag-1'}
+        path: 'commodity',
+        name: 'Commodity',
+        hidden: true,
+        component: ()=> import('@/views/shop/commodity')
       }
     ]
   },

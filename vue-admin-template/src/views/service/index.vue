@@ -13,7 +13,7 @@
         border-color: khaki;
         border-style: solid">
           <div class="box" style="height: 380px">
-            <el-scrollbar style="height: 100%"
+            <el-scrollbar style="height: 100%;"
                           ref="scrollbar">
               <p v-if="isFixedTop" style="position:fixed;margin-left: 23%" class="el-icon-loading"></p>
               <ul style="overflow:auto">
@@ -138,9 +138,7 @@
       },
 
       onMessage(e){
-        console.log(e)
         let m = JSON.parse(e.data)
-        console.log(m)
         this.chatList.push(m)
       },
 
@@ -157,9 +155,9 @@
 
       submit() {
         let data = this.messageToData()
+        this.message.content = ''
         this.chatList.push(data)
         this.send(JSON.stringify(data))
-        this.message.content = ''
         this.toBottom()
       },
       messageToData(){
@@ -212,8 +210,9 @@
   }
 </script>
 
-<style>
 
+
+<style>
   .left {
     float: left;
     width: auto;

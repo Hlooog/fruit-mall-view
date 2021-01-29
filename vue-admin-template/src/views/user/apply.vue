@@ -20,31 +20,53 @@
         stripe
         style="width: 100%">
         <el-table-column
-          prop="user_id"
+          prop="userId"
           label="用户id"
-          width="180">
+          width="100">
         </el-table-column>
         <el-table-column
           prop="name"
           label="姓名"
-          width="180">
+          width="100">
         </el-table-column>
         <el-table-column
-          prop="id_card"
-          label="身份证号码">
+          prop="idCard"
+          label="身份证号码"
+          width="160">
         </el-table-column>
         <el-table-column
           prop="positive"
-          label="身份证正面照">
+          label="身份证正面照"
+          width="160">
+          <template slot-scope="scope">
+            <el-image
+              style="width: 100px; height: 100px"
+              :src="scope.row.positive"
+              :preview-src-list="[scope.row.positive]">
+            </el-image>
+          </template>
         </el-table-column>
         <el-table-column
           prop="negative"
-          label="身份证反面照">
+          label="身份证反面照"
+          width="160">
+          <template slot-scope="scope">
+            <el-image
+              style="width: 100px; height: 100px"
+              :src="scope.row.negative"
+              :preview-src-list="[scope.row.negative]">
+            </el-image>
+          </template>
+        </el-table-column>
+        <el-table-column
+          prop="applyTime"
+          label="申请时间"
+          width="160">
         </el-table-column>
         <el-table-column
           label="审核操作">
           <template slot-scope="scope">
-            <el-button v-if="scope.row.status == 0" type="success" @click="review(scope.row.id)">通过审核</el-button>
+            <el-button v-if="scope.row.status == 0" type="success" @click="review(scope.row.userId)">通过审核</el-button>
             <el-button v-if="scope.row.status == 0" type="danger" @click="refuse(scope.row.id)">拒绝</el-button>
           </template>
         </el-table-column>
@@ -68,10 +90,6 @@
           {
             value: 0,
             label: '未审核',
-          },
-          {
-            value: 1,
-            label: '通过审核',
           },
           {
             value: 2,

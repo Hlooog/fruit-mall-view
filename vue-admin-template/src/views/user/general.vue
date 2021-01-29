@@ -62,7 +62,7 @@
                 placement="top"
                 width="160"
                 :value="uid == scope.row.id">
-                <p>确定设为客服？</p>
+                <p>是否把该用户设为客服？</p>
                 <div style="text-align: right; margin: 0">
                   <el-button size="mini" type="text" @click="uid = 0">取消</el-button>
                   <el-button type="primary" size="mini" @click="setService">确定</el-button>

@@ -13,7 +13,7 @@ const name = defaultSettings.title || '农夫果园网店后台系统' // page t
 // For example, Mac: sudo npm run
 // You can change the port by the following methods:
 // port = 9528 npm run dev OR npm run dev --port = 9528
-const port = process.env.port || process.env.npm_config_port || 8090 // dev port
+const port = process.env.port || process.env.npm_config_port || 8001 // dev port
 
 // All configuration item explanations can be find in https://cli.vuejs.org/config/
 module.exports = {
@@ -40,7 +40,7 @@ module.exports = {
     },
     proxy:{
       [process.env.VUE_APP_BASE_API]:{
-        target:'http://localhost:8080/',
+        target:'http://localhost:8150/',
         changeOrigin: true,
         pathRewrite:{
           ['^'+process.env.VUE_APP_BASE_API]: ''
