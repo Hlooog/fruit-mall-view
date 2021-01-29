@@ -6,10 +6,7 @@ export function login(data) {
   return request({
     url: '/admin/login',
     method: 'post',
-    params: {
-      phone: data.phone,
-      password: data.password
-    }
+    data: data
   })
 }
 

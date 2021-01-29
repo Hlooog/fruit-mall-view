@@ -1,16 +1,27 @@
 import { login, logout, getInfo } from '@/api/user'
 import { getToken, setToken, removeToken } from '@/utils/auth'
 import { resetRouter } from '@/router'
+import router from "@/router"
 
 const getDefaultState = () => {
   return {
     token: getToken(),
+    id: 0,
     name: '',
-    avatar: ''
+    avatar: '',
+    phone: '',
+    create: 0,
   }
 }
 
-const state = getDefaultState()
+const state = sessionStorage.getItem('state') ? JSON.parse(sessionStorage.getItem('state')).user :{
+  token: getToken(),
+  name: '',
+  avatar: '',
+  user_id: 0,
+  phone: '',
+  create: 0,
+}
 
 const mutations = {
   RESET_STATE: (state) => {
@@ -24,17 +35,34 @@ const mutations = {
   },
   SET_AVATAR: (state, avatar) => {
     state.avatar = avatar
+  },
+  SET_ID: (state,id) => {
+    state.id = id
+  },
+  SET_PHONE: (state,phone) => {
+    state.phone = phone
+  },
+  SET_CREATE: (state,create) => {
+    state.create = create
   }
 }
 
 const actions = {
   // user login
   login({ commit }, userInfo) {
-    const { username, password } = userInfo
+    const { phone, password } = userInfo
     return new Promise((resolve, reject) => {
-      login({ username: username.trim(), password: password }).then(response => {
+      login({ phone: phone.trim(), password: password }).then(response => {
         const { data } = response
         commit('SET_TOKEN', data.token)
+        commit('SET_ID', data.id)
+        commit('SET_NAME', data.name)
+        commit('SET_AVATAR', data.avatar)
+        commit('SET_PHONE',data.phone)
+        commit('SET_CREATE', data.create)
+        if (data.create === 0) {
+          router.push("/commodity/index")
+        }
         setToken(data.token)
         resolve()
       }).catch(error => {
@@ -44,7 +72,7 @@ const actions = {
   },
 
   // get user info
-  getInfo({ commit, state }) {
+  /*getInfo({ commit, state }) {
     return new Promise((resolve, reject) => {
       getInfo(state.token).then(response => {
         const { data } = response
@@ -62,12 +90,12 @@ const actions = {
         reject(error)
       })
     })
-  },
+  },*/
 
   // user logout
   logout({ commit, state }) {
     return new Promise((resolve, reject) => {
-      logout(state.token).then(() => {
+      logout().then(() => {
         removeToken() // must remove  token  first
         resetRouter()
         commit('RESET_STATE')

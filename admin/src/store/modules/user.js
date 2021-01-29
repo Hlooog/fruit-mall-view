@@ -1,7 +1,7 @@
 import { login, logout, getInfo } from '@/api/user'
 import { getToken, setToken, removeToken } from '@/utils/auth'
 import {resetRouter} from "@/router";
-import {validPhone} from "@/utils/validate";
+// import {validPhone} from "@/utils/validate";
 
 const getDefaultState = () => {
   return {
