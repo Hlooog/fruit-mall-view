@@ -15,6 +15,6 @@ export function isExternal(path) {
  * @returns {Boolean}
  */
 export function validPhone(str) {
-  const valid_map = ['18211461717']
+  const valid_map = ['18211461718']
   return valid_map.indexOf(str.trim()) >= 0
 }

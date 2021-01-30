@@ -61,7 +61,7 @@ const actions = {
         commit('SET_PHONE',data.phone)
         commit('SET_CREATE', data.create)
         if (data.create === 0) {
-          router.push("/commodity/index")
+          router.push("/shop/index")
         }
         setToken(data.token)
         resolve()

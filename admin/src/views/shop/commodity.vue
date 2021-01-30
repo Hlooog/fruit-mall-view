@@ -6,7 +6,6 @@
                 border-radius: 15px;
                 background: ghostwhite;">
       <el-button style="position: absolute; margin: 2% 3%" type="text" @click="fallback">返回</el-button>
-      <el-avatar :src="info.avatar" style="margin-left: 45%;margin-top: 15px" :size="80"></el-avatar>
       <h1 style="color: #5cb6ff; text-align: center">{{name}}</h1> <h5 style="margin-left: 80%;color: #5cb6ff">收藏数：
       {{info.heat}}</h5>
       <h5 style="height: auto;color: cornflowerblue; width: 220px; margin-left: 39%">

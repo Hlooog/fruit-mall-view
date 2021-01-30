@@ -2,19 +2,8 @@
   <div>
     <el-card style="height: 700px; width: 500px; margin: 4% 28%" shadow="always">
       <el-form :model="info" :rules="rules" ref="info" label-width="150px">
-        <el-form-item label="店铺头像" prop="avatar">
-          <el-upload
-            class="avatar-uploader"
-            action="http://localhost:8002/fruit-mall/oss/upload"
-            :show-file-list="false"
-            :on-success="success"
-            :before-upload="beforeAvatarUpload">
-            <img v-if="info.avatar" :src="info.avatar" class="avatar">
-            <i v-else class="el-icon-plus avatar-uploader-icon"></i>
-          </el-upload>
-        </el-form-item>
         <el-form-item label="店铺名称" prop="name">
-          <el-input v-model="info.name" style="width: 60%"></el-input>
+          <el-input maxlength="20" v-model="info.name" style="width: 60%"></el-input>
         </el-form-item>
         <el-form-item label="所在城市" prop="cityId">
           <el-cascader
@@ -28,10 +17,11 @@
           </el-cascader>
         </el-form-item>
         <el-form-item label="店铺简介" prop="description">
-          <el-input type="textarea" rows="7" v-model="info.description" ></el-input>
+          <el-input type="textarea" rows="7" v-model="info.description" maxlength="255"></el-input>
         </el-form-item>
         <el-form-item>
-          <el-button type="primary" @click="submit('info')">立即创建</el-button>
+          <el-button v-if="create" type="primary" @click="submit('info')">修改店铺信息</el-button>
+          <el-button v-else type="primary" @click="submit('info')">立即创建</el-button>
         </el-form-item>
       </el-form>
     </el-card>
@@ -60,10 +50,20 @@
     data() {
       return {
         info: {},
-        rules: {},
+        rules: {
+          name: [
+            {required: true, message: '店铺名不能为空', trigger: 'blur'},
+            {min: 3, max: 20, message: '长度在3-20之间',trigger: 'blur'}
+          ],
+          cityId: [
+            {required: true, message: '所在城市不能为空', trigger: 'blur'}
+          ],
+          description: [
+            {required: true, message: '店铺描述不能为空', trigger: 'blur'},
+          ]
+        },
         cityList: [],
         cityId: 0,
-        urlList: []
       }
     },
     methods: {
@@ -78,29 +78,21 @@
           this.cityList = response.data
         })
       },
-      beforeAvatarUpload(file) {
-        const isJPG = file.type === 'image/jpeg';
-        const isLt2M = file.size / 1024 / 1024 < 2;
-
-        if (!isJPG) {
-          this.$message.error('上传头像图片只能是 JPG 格式!');
-        }
-        if (!isLt2M) {
-          this.$message.error('上传头像图片大小不能超过 2MB!');
-        }
-        return isJPG && isLt2M;
-      },
-      success(res,file){
-        this.info.urlList.push(this.info.avatar)
-        this.info.avatar = res.data
-      },
       cityChange(){
         this.info.cityId = this.cityId[this.cityId.length - 1]
       },
       submit(valid){
         this.$refs[valid].validate((validation) => {
           if (validation) {
-            shop.CreateOrUpdate(this.info,this.id)
+            shop.CreateOrUpdate(this.info).then(() => {
+              this.$message({
+                type: 'success',
+                message: '修改成功'
+              })
+              if (this.create == 0){
+                this.$store.commit('user/SET_CREATE',1)
+              }
+            })
           } else {
             return false
           }

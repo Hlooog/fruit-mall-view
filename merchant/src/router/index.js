@@ -87,6 +87,17 @@ export const constantRoutes = [
     }]
   },
 
+  {
+    path: '/balance',
+    component: Layout,
+    children: [{
+      path: 'index',
+      name: 'Index',
+      component: () => import('@/views/balance/index'),
+      meta: { title: '提现记录', icon: 'el-icon-s-order' }
+    }]
+  },
+
   // 404 page must be placed at the end !!!
   { path: '*', redirect: '/404', hidden: true }
 ]

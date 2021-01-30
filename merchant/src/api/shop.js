@@ -7,14 +7,11 @@ export default {
       method: 'get'
     })
   },
-  CreateOrUpdate(data,id){
+  CreateOrUpdate(data){
     return request({
       url: '/shop/createOrUpdate',
       method: 'post',
-      data: data,
-      params: {
-        id: id
-      }
+      data: data
     })
   },
 }
