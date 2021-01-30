@@ -1,14 +1,17 @@
 <template>
   <div>
-    <el-card style="height: 700px; width: 500px; margin: 4% 28%" shadow="always">
+    <el-card style="height: 500px; width: 500px; margin: 4% 28%" shadow="always">
       <el-form :model="info" :rules="rules" ref="info" label-width="150px">
+        <el-form-item v-if="shop_id" label="店铺id">
+          {{info.id}}
+        </el-form-item>
         <el-form-item label="店铺名称" prop="name">
           <el-input maxlength="20" v-model="info.name" style="width: 60%"></el-input>
         </el-form-item>
         <el-form-item label="所在城市" prop="cityId">
           <el-cascader
             filterable
-            :disabled="create === 1"
+            :disabled="shop_id != 0"
             v-model="cityId"
             :options="cityList"
             :show-all-levels="false"
@@ -20,7 +23,7 @@
           <el-input type="textarea" rows="7" v-model="info.description" maxlength="255"></el-input>
         </el-form-item>
         <el-form-item>
-          <el-button v-if="create" type="primary" @click="submit('info')">修改店铺信息</el-button>
+          <el-button v-if="shop_id" type="primary" @click="submit('info')">修改店铺信息</el-button>
           <el-button v-else type="primary" @click="submit('info')">立即创建</el-button>
         </el-form-item>
       </el-form>
@@ -36,7 +39,7 @@
   export default {
     name: "index",
     created() {
-      if (this.create == 1) {
+      if (this.shop_id != 0) {
         this.getInfo()
       }
       this.getCity()
@@ -44,7 +47,7 @@
     computed: {
       ...mapGetters([
         'id',
-        'create',
+        'shop_id',
       ])
     },
     data() {
@@ -71,6 +74,7 @@
         shop.getInfo(this.id).then(response => {
           this.info = response.data
           this.cityId = this.info.cityId
+          this.$store.commit('user/SET_SHOP_ID',this.info.id)
         })
       },
       getCity(){

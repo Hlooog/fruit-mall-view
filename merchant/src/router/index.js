@@ -98,6 +98,17 @@ export const constantRoutes = [
     }]
   },
 
+  {
+    path: '/service',
+    component: Layout,
+    children: [{
+      path: 'index',
+      name: 'Index',
+      component: () => import('@/views/service/index'),
+      meta: { title: '在线客服', icon: 'el-icon-service' }
+    }]
+  },
+
   // 404 page must be placed at the end !!!
   { path: '*', redirect: '/404', hidden: true }
 ]

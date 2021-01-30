@@ -32,7 +32,7 @@ export default {
   },
   getCommodityList(id){
     return request({
-      url: '/commodity/page/' + id,
+      url: '/commodity/list/' + id,
       method: 'get',
     })
   },

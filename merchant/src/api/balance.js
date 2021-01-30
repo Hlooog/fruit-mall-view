@@ -22,5 +22,17 @@ export default {
         phone: phone
       }
     })
+  },
+  getWithdraw(data){
+    return request({
+      url: '/withdrawalRecord/page',
+      method: 'get',
+      params: {
+        phone: data.phone,
+        cur: data.cur,
+        startTime: data.startTime,
+        endTime: data.endTime
+      }
+    })
   }
 }

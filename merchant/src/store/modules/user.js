@@ -10,7 +10,7 @@ const getDefaultState = () => {
     name: '',
     avatar: '',
     phone: '',
-    create: 0,
+    shop_id: 0,
   }
 }
 
@@ -20,7 +20,7 @@ const state = sessionStorage.getItem('state') ? JSON.parse(sessionStorage.getIte
   avatar: '',
   user_id: 0,
   phone: '',
-  create: 0,
+  shop_id: 0,
 }
 
 const mutations = {
@@ -42,8 +42,8 @@ const mutations = {
   SET_PHONE: (state,phone) => {
     state.phone = phone
   },
-  SET_CREATE: (state,create) => {
-    state.create = create
+  SET_SHOP_ID: (state, shopId) => {
+    state.shop_id = shopId
   }
 }
 
@@ -59,7 +59,7 @@ const actions = {
         commit('SET_NAME', data.name)
         commit('SET_AVATAR', data.avatar)
         commit('SET_PHONE',data.phone)
-        commit('SET_CREATE', data.create)
+        commit('SET_SHOP_ID',data.shop_id)
         if (data.create === 0) {
           router.push("/shop/index")
         }

@@ -3,7 +3,7 @@
     <el-row>
       <el-col :span="6">
         <el-card class="ic" shadow="always">
-          <div>可提现金额</div>
+          <div>可提现金额(元)</div>
           <div style="margin-top: 20%">
             <span style="color: #67C23A; font-size: 50px">
               {{balance.withdrawAble}}
@@ -19,7 +19,7 @@
       </el-col>
       <el-col :span="6">
         <el-card class="ic" shadow="always">
-          <div>已提现金额</div>
+          <div>已提现金额(元)</div>
           <div style="margin-top: 20%">
             <span style="color: #F56C6C; font-size: 50px">
               {{balance.withdraw}}
@@ -32,7 +32,7 @@
       </el-col>
       <el-col :span="6">
         <el-card class="ic" shadow="always">
-          <div>被冻结金额</div>
+          <div>被冻结金额(元)</div>
           <div style="margin-top: 20%">
             <span style="color: #E6A23C; font-size: 50px">
               {{balance.frozen}}
@@ -45,7 +45,7 @@
       </el-col>
       <el-col :span="6">
         <el-card class="ic" shadow="always">
-          <div>总收入</div>
+          <div>总收入(元)</div>
           <div style="margin-top: 20%">
             <span style="font-size: 50px">
               {{balance.lumpSum}}
