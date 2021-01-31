@@ -121,7 +121,7 @@
     },
     methods: {
       initWebsocket(){
-        const url = "ws://localhost:8080/fruit-mall/chat/" + this.phone
+        const url = "ws://localhost:8150/fruit-mall/chat/" + this.phone
         this.ws = new WebSocket(url)
         this.ws.open = this.onOpen
         this.ws.onmessage = this.onMessage

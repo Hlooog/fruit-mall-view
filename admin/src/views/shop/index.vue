@@ -100,7 +100,7 @@
       <el-pagination
         style="margin-left: 30%"
         background
-        :current-page.sync="page.cur"
+        :current-page="page.cur"
         @current-change="init"
         layout="prev, pager, next"
         :total="total">
@@ -131,7 +131,7 @@
 
   export default {
     created() {
-      let c = this.$route.query.cur
+      let c = Number(this.$route.query.cur)
       if (c){
         this.page.cur = c
       }

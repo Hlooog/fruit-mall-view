@@ -71,7 +71,7 @@
           <el-input style="width: 160px" v-model.number=" withdraw.phone" placeholder='请输入手机号码'></el-input>
         </el-form-item>
         <el-form-item prop="code" label="验证码">
-          <el-input style="width: 160px" v-model.number="withdraw.code" placeholder="请先获取验证码"></el-input>
+          <el-input style="width: 160px" v-model="withdraw.code" placeholder="请先获取验证码"></el-input>
           <el-button v-if="hasCode" type="text" @click="obtain">获取验证码</el-button>
           <span v-else style="color: #20a0ff">{{num}} 秒</span>
         </el-form-item>
@@ -124,7 +124,6 @@
           ],
           code: [
             {required: true, message: '验证码不能为空', trigger: 'blur'},
-            {type: 'number', message: '请输入正确的验证码', trigger: 'blur'}
           ]
         },
         hasCode: true,
@@ -165,6 +164,7 @@
           if (v) {
             balance.withdraw(this.withdraw).then(()=> {
               this.getBalance()
+              this.withdrawVisible = false
             })
           } else {
             return false
