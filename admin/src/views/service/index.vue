@@ -16,9 +16,10 @@
             <el-scrollbar style="height: 100%;"
                           ref="scrollbar">
               <p v-if="isFixedTop" style="position:fixed;margin-left: 23%" class="el-icon-loading"></p>
+              <p v-if="hasNext" style="position:fixed;margin-left: 23%">没有更多信息了</p>
               <ul style="overflow:auto">
                 <li v-for="(c,index) in chatList" :key="index" style="min-height:40px; overflow: auto">
-                  <el-row v-if="c.fromPhone != phone">
+                  <el-row v-if="c.fromPhone != 'service'">
                     <el-col :span="2">
                       <el-avatar :src="c.avatar"></el-avatar>
                     </el-col>
@@ -61,13 +62,13 @@
         <div class="box" style="height: 380px">
           <el-scrollbar style="height: 100%">
             <ul class="cotrs">
-              <li v-for="(u, index) in userList"
+              <li v-for="(u, index) in link"
                   :key="index"
                   @click="click(u.phone,u.name)"
                   :class="{active : select == u.name}">
                 <el-row>
                   <el-col :span="2">
-                    <el-badge v-if="info" :value="info" class="item">
+                    <el-badge  v-if="unread[u.phone]" v-model="unread[u.phone]" class="item">
                       <el-avatar :src="u.avatar"></el-avatar>
                     </el-badge>
                     <el-avatar v-else :src="u.avatar"></el-avatar>
@@ -87,28 +88,28 @@
 
 <script>
   import {mapGetters} from 'vuex'
+  import service from "@/api/service";
+
   export default {
     name: "index",
     created() {
       this.toBottom()
-      this.message.fromPhone = this.phone
-      this.message.fromName = this.name
+      this.message.fromPhone = 'service'
+      this.message.fromName = '客服'
       this.message.avatar = this.avatar
       this.initWebsocket()
-
+      this.initUser()
     },
     data() {
       return {
         userName: '',
         chatList: [],
         bar: {},
-        top: 10,
         isFixedTop: false,
-        userList: [],
         select: '',
-        info: 1,
         ws: null,
         message: {
+          id: 0,
           fromPhone: '',
           fromName: '',
           avatar: '',
@@ -117,50 +118,94 @@
           content: '',
         },
         time: 1000,
+        unread: [],
+        link: [],
+        cur: 1,
+        hasNext: false,
       }
     },
     methods: {
-      initWebsocket(){
-        const url = "ws://localhost:8150/fruit-mall/chat/" + this.phone
+      initWebsocket() {
+        const url = "ws://localhost:8150/fruit-mall/chat/service"
         this.ws = new WebSocket(url)
         this.ws.open = this.onOpen
         this.ws.onmessage = this.onMessage
-        this.ws.onerror  = this.onError
-        this.ws.onclose  = this.onClose
+        this.ws.onerror = this.onError
+        this.ws.onclose = this.onClose
+      },
+      initUser() {
+        service.getLinkUser().then(response => {
+          this.unread = response.data.unread
+          this.link = response.data.link
+        })
       },
 
-      onOpen(){
+      onOpen() {
       },
 
-      send(data){
+      send(data) {
         this.ws.send(data)
       },
 
-      onMessage(e){
-        let m = JSON.parse(e.data)
-        this.chatList.push(m)
+      onMessage(e) {
+        let data = e.data
+        let m = JSON.parse(data)
+        if (m.name) {
+          let index = this.getIndex(m.phone)
+          if (index != 0) {
+            if (index != -1) {
+              this.link.splice(index, 1)
+            }
+            this.link.unshift(m)
+          }
+        } else {
+          if (m.fromPhone != this.message.toPhone) {
+            if (this.unread[m.fromPhone]) {
+              this.unread[m.fromPhone] = this.unread[m.fromPhone] + 1
+            } else {
+              this.unread[m.fromPhone] = 1
+            }
+          } else {
+            this.chatList.push(m)
+            this.toBottom()
+          }
+        }
       },
 
-      onError(){
+      getIndex(phone) {
+        for (let i = 0; i < this.link.length; i++) {
+          if (phone == this.link[i].phone) {
+            return i;
+          }
+        }
+        return -1;
+      },
+
+      onError() {
         setTimeout(() => {
           this.time = this.time * 2
           this.initWebsocket()
-        },this.time)
+        }, this.time)
       },
 
-      onClose(){
+      onClose() {
 
       },
 
       submit() {
-        let data = this.messageToData()
-        this.message.content = ''
-        this.chatList.push(data)
-        this.send(JSON.stringify(data))
-        this.toBottom()
+        if (this.message.content.trim() != '') {
+          let now = new Date()
+          this.message.id = now.getTime()
+          let data = this.messageToData()
+          this.message.content = ''
+          this.chatList.push(data)
+          this.send(JSON.stringify(data))
+          this.toBottom()
+        }
       },
-      messageToData(){
+      messageToData() {
         let data = {
+          id: this.message.id,
           fromPhone: this.message.fromPhone,
           fromName: this.message.fromName,
           avatar: this.message.avatar,
@@ -177,18 +222,50 @@
       },
       load() {
         this.bar = this.$refs.scrollbar.wrap
+        let height = this.bar.scrollHeight
+
         this.bar.onscroll = () => {
           if (this.bar.scrollTop == 0) {
-            this.isFixedTop = true
-            setTimeout(() => {
-              this.isFixedTop = false
-            }, 2000)
+            if (this.cur != 0) {
+              this.isFixedTop = true
+              this.cur = this.cur + 1
+              service.gerRecord(this.message.toPhone, this.cur).then(response => {
+                if(response.data.length > 0) {
+                  this.chatList = [...response.data, ...this.chatList]
+                  this.isFixedTop = false
+                  this.bar.scrollTop = this.bar.scrollHeight - height
+                } else {
+                  this.cur = 0;
+                  this.isFixedTop = false
+                  this.hasNext = true
+                  setTimeout(()=>{
+                    this.hasNext = false
+                  },1000)
+                }
+              })
+            } else {
+              this.hasNext = true
+              setTimeout(()=>{
+                this.hasNext = false
+              },1000)
+            }
           }
         }
       },
       click(phone, name) {
         this.userName = name
         this.select = name
+        this.chatList = []
+        this.message.toPhone = phone
+        this.message.toName = name
+        this.cur = 1
+        service.gerRecord(phone, this.cur).then(response => {
+          this.chatList = response.data
+          this.unread[phone] = 0
+          this.$nextTick(() => {
+            this.bar.scrollTop = this.bar.scrollHeight
+          })
+        })
       }
     },
     mounted() {
@@ -196,7 +273,7 @@
       this.onMessage
       this.onError
     },
-    computed:{
+    computed: {
       ...mapGetters([
         'phone',
         'name',
@@ -204,11 +281,10 @@
       ])
     },
     destroyed() {
-      this.ws.onclose  = this.onClose
+      this.ws.onclose = this.onClose
     }
   }
 </script>
-
 
 
 <style>

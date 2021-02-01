@@ -101,11 +101,10 @@ export const constantRoutes = [
         path: 'commodity',
         name: 'Commodity',
         hidden: true,
-        component: ()=> import('@/views/shop/commodity')
+        component: () => import('@/views/shop/commodity')
       }
     ]
   },
-
   {
     path: '/order',
     component: Layout,
@@ -115,6 +114,26 @@ export const constantRoutes = [
         name: '订单管理',
         component: () => import('@/views/order/index'),
         meta: {title: '订单管理', icon: 'el-icon-s-order'}
+      }
+    ]
+  },
+  {
+    path: '/withdraw',
+    name: '提现管理',
+    meta: {title: '提现管理', icon: 'el-icon-money'},
+    component: Layout,
+    children: [
+      {
+        path: 'index',
+        name: 'Index',
+        component: () => import('@/views/withdraw/index'),
+        meta: {title: '查找提现记录', icon: 'el-icon-search'}
+      },
+      {
+        path: 'review',
+        name: 'Review',
+        component: () => import('@/views/withdraw/review'),
+        meta: {title: '审核提现申请', icon: 'el-icon-success'}
       }
     ]
   },
