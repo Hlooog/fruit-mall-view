@@ -15,6 +15,7 @@
             <el-scrollbar style="height: 100%;"
                           ref="scrollbar">
               <p v-if="isFixedTop" style="position:fixed;margin-left: 23%" class="el-icon-loading"></p>
+              <p v-if="hasNext" style="position:fixed;margin-left: 23%">没有更多信息了</p>
               <ul style="overflow:auto">
                 <li v-for="(c,index) in chatList" :key="index" style="min-height:40px; overflow: auto">
                   <el-row v-if="c.fromPhone != phone">
@@ -62,6 +63,7 @@
 
 <script>
   import {mapGetters} from 'vuex'
+  import service from "../../../../admin/src/api/service";
   export default {
     name: "index",
     created() {
@@ -72,13 +74,13 @@
       this.message.toPhone = 'service'
       this.message.toName = '客服'
       this.initWebsocket()
+      this.initRecord()
     },
     data() {
       return {
         chatList: [],
         bar: {},
         isFixedTop: false,
-        userList: [],
         ws: null,
         message: {
           id: 0,
@@ -90,6 +92,8 @@
           content: '',
         },
         time: 1000,
+        cur: 1,
+        hasNext: false
       }
     },
     methods: {
@@ -102,6 +106,15 @@
         this.ws.onclose  = this.onClose
       },
 
+      initRecord() {
+        this.chatList = []
+        this.cur = 1
+        service.gerRecord(this.phone, this.cur).then(response => {
+          this.chatList = response.data
+          this.toBottom()
+        })
+      },
+
       onOpen(){
       },
 
@@ -112,6 +125,7 @@
       onMessage(e){
         let m = JSON.parse(e.data)
         this.chatList.push(m)
+        this.toBottom()
       },
 
       onError(){
@@ -122,7 +136,7 @@
       },
 
       onClose(){
-
+        console.log("websocket close ")
       },
 
       submit() {
@@ -154,12 +168,32 @@
       },
       load() {
         this.bar = this.$refs.scrollbar.wrap
+        let height = this.bar.scrollHeight
         this.bar.onscroll = () => {
           if (this.bar.scrollTop == 0) {
-            this.isFixedTop = true
-            setTimeout(() => {
-              this.isFixedTop = false
-            }, 2000)
+            if (this.cur != 0) {
+              this.isFixedTop = true
+              this.cur = this.cur + 1
+              service.gerRecord(this.phone, this.cur).then(response => {
+                if (response.data.length > 0) {
+                  this.chatList = [...response.data, ...this.chatList]
+                  this.isFixedTop = false
+                  this.bar.scrollTop = this.bar.scrollHeight - height
+                } else {
+                  this.cur = 0;
+                  this.isFixedTop = false
+                  this.hasNext = true
+                  setTimeout(() => {
+                    this.hasNext = false
+                  }, 1000)
+                }
+              })
+            } else {
+              this.hasNext = true
+              setTimeout(() => {
+                this.hasNext = false
+              }, 1000)
+            }
           }
         }
       },

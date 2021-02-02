@@ -64,11 +64,11 @@
             <ul class="cotrs">
               <li v-for="(u, index) in link"
                   :key="index"
-                  @click="click(u.phone,u.name)"
+                  @click="click(u)"
                   :class="{active : select == u.name}">
                 <el-row>
                   <el-col :span="2">
-                    <el-badge  v-if="unread[u.phone]" v-model="unread[u.phone]" class="item">
+                    <el-badge v-if="unread[u.phone]" v-model="unread[u.phone]" class="item">
                       <el-avatar :src="u.avatar"></el-avatar>
                     </el-badge>
                     <el-avatar v-else :src="u.avatar"></el-avatar>
@@ -118,10 +118,11 @@
           content: '',
         },
         time: 1000,
-        unread: [],
+        unread: {},
         link: [],
         cur: 1,
         hasNext: false,
+        m: '4',
       }
     },
     methods: {
@@ -135,8 +136,11 @@
       },
       initUser() {
         service.getLinkUser().then(response => {
-          this.unread = response.data.unread
           this.link = response.data.link
+          let keys = Object.keys(response.data.unread)
+          for (let i = 0; i < keys.length; i++) {
+            this.$set(this.unread, keys[i], response.data.unread[keys[i]])
+          }
         })
       },
 
@@ -161,9 +165,10 @@
         } else {
           if (m.fromPhone != this.message.toPhone) {
             if (this.unread[m.fromPhone]) {
-              this.unread[m.fromPhone] = this.unread[m.fromPhone] + 1
+              this.unread[m.fromPhone]++
             } else {
-              this.unread[m.fromPhone] = 1
+              this.$set(this.unread, m.fromPhone, 0)
+              this.unread[m.fromPhone]++
             }
           } else {
             this.chatList.push(m)
@@ -189,7 +194,7 @@
       },
 
       onClose() {
-
+        console.log("websocket close")
       },
 
       submit() {
@@ -230,7 +235,7 @@
               this.isFixedTop = true
               this.cur = this.cur + 1
               service.gerRecord(this.message.toPhone, this.cur).then(response => {
-                if(response.data.length > 0) {
+                if (response.data.length > 0) {
                   this.chatList = [...response.data, ...this.chatList]
                   this.isFixedTop = false
                   this.bar.scrollTop = this.bar.scrollHeight - height
@@ -238,30 +243,33 @@
                   this.cur = 0;
                   this.isFixedTop = false
                   this.hasNext = true
-                  setTimeout(()=>{
+                  setTimeout(() => {
                     this.hasNext = false
-                  },1000)
+                  }, 1000)
                 }
               })
             } else {
               this.hasNext = true
-              setTimeout(()=>{
+              setTimeout(() => {
                 this.hasNext = false
-              },1000)
+              }, 1000)
             }
           }
         }
       },
-      click(phone, name) {
-        this.userName = name
-        this.select = name
+      click(u) {
+        let index = this.getIndex(u.phone)
+        this.link.splice(index, 1)
+        this.link.unshift(u)
+        this.userName = u.name
+        this.select = u.name
         this.chatList = []
-        this.message.toPhone = phone
-        this.message.toName = name
+        this.message.toPhone = u.phone
+        this.message.toName = u.name
         this.cur = 1
-        service.gerRecord(phone, this.cur).then(response => {
+        service.gerRecord(u.phone, this.cur).then(response => {
           this.chatList = response.data
-          this.unread[phone] = 0
+          this.unread[u.phone] = 0
           this.$nextTick(() => {
             this.bar.scrollTop = this.bar.scrollHeight
           })

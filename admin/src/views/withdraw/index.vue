@@ -44,9 +44,8 @@
         <el-table-column label="状态" width="120">
           <template slot-scope="scope">
             <el-tag v-if="scope.row.status == 0">审核中</el-tag>
-            <el-tag type="warning" v-else-if="scope.row.status == 1">打款中</el-tag>
-            <el-tag type="success" v-else-if="scope.row.status == 2">完成提现</el-tag>
-            <el-tag type="danger" v-else>拒绝提现</el-tag>
+            <el-tag type="success" v-else-if="scope.row.status == 1">完成提现</el-tag>
+            <el-tag type="danger" v-else-if="scope.row.status == 2">拒绝提现</el-tag>
           </template>
         </el-table-column>
       </el-table>
@@ -87,17 +86,13 @@
             value: 0,
           },
           {
-            label: '打款中',
+            label: '完成提现',
             value: 1,
           },
           {
-            label: '完成提现',
+            label: '被拒绝',
             value: 2,
           },
-          {
-            label: '被拒绝',
-            value: 3,
-          }
         ]
       }
     },

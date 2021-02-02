@@ -26,11 +26,16 @@
         </el-table-column>
         <el-table-column label="操作">
           <template slot-scope="scope">
-            <el-button v-if="scope.row.isOnShelf" type="text" @click="off(scope.row.id)">下架</el-button>
-            <el-button v-else type="text" @click="up(scope.row.id)">上架</el-button>
-            <el-button type="text" @click="deleteCommodity(scope.row.id)">删除</el-button>
-            <el-button type="text" @click="showEditCommodity(scope.row.id)">修改</el-button>
-            <el-button type="text" @click="showInfo(scope.row.id)">查看规格</el-button>
+            <div v-if="scope.row.isOnShelf">
+              <el-button type="text" @click="off(scope.row.id)">下架</el-button>
+              <div style="width: 160px; font-size: 8px; color: #909399">其他操作需下架商品才能操作</div>
+            </div>
+            <div v-else>
+              <el-button type="text" @click="up(scope.row.id)">上架</el-button>
+              <el-button type="text" @click="deleteCommodity(scope.row.id)">删除</el-button>
+              <el-button type="text" @click="showEditCommodity(scope.row.id)">修改</el-button>
+              <el-button type="text" @click="showInfo(scope.row.id)">查看规格</el-button>
+            </div>
           </template>
         </el-table-column>
       </el-table>
@@ -90,9 +95,12 @@
           <el-input v-model="commodity.name" style="width: 200px" placeholder="请填写水果名称"></el-input>
         </el-form-item>
         <el-form-item label="所属种类" prop="varietyId">
-          <el-select allow-create
-                     filterable
+          <el-select ref="editSelect"
                      v-model="commodity.varietyId"
+                     filterable
+                     allow-create
+                     default-first-option
+                     @change="vChange"
                      placeholder="请选择">
             <el-option
               v-for="item in variety"
@@ -209,8 +217,8 @@
       },
       up(id) {
         commodity.up(id).then(() => {
+          this.init()
         })
-        this.init()
       },
       deleteCommodity(id) {
         commodity.deleteCommodity(id).then(() => {
@@ -261,6 +269,7 @@
         })
       },
       create(valid) {
+        console.log(this.commodity)
         this.$refs[valid].validate(v => {
           if (v) {
             this.commodity.shopId = this.shop_id
@@ -285,7 +294,6 @@
         this.infoTitle = '修改商品规格'
         commodity.infoGet(id).then(response => {
           this.info = response.data
-          console.log(this.info)
           this.editInfoVisible = true
         })
       },
@@ -317,6 +325,19 @@
             return false
           }
         })
+      },
+      vChange(val) {
+        if (val.constructor == String) {
+           commodity.insertVariety(val).then(res => {
+             let id = res.data
+             commodity.getVariety().then(response => {
+               this.variety = response.data
+               setTimeout(()=>{
+                 this.commodity.varietyId = id
+               }, 1000)
+             })
+           })
+        }
       }
     },
   }
