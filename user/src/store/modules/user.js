@@ -1,7 +1,6 @@
-import { login, logout, getInfo } from '@/api/user'
-import { getToken, setToken, removeToken } from '@/utils/auth'
-import {resetRouter} from "@/router";
-// import {validPhone} from "@/utils/validate";
+import { getToken, setToken, removeToken } from '../../utils/auth'
+import { resetRouter } from '../../router/index'
+import router from "../../router"
 
 const getDefaultState = () => {
   return {
@@ -39,12 +38,12 @@ const mutations = {
   },
   SET_PHONE: (state,phone) => {
     state.phone = phone
-  }
+  },
 }
 
 const actions = {
   // user login
-  login({ commit }, userInfo) {
+  /*login({ commit }, userInfo) {
     const { phone, password } = userInfo
     return new Promise((resolve, reject) => {
       login({ phone: phone.trim(), password: password }).then(response => {
@@ -60,17 +59,20 @@ const actions = {
         reject(error)
       })
     })
-  },
+  },*/
 
   // get user info
   /*getInfo({ commit, state }) {
     return new Promise((resolve, reject) => {
       getInfo(state.token).then(response => {
         const { data } = response
+
         if (!data) {
           return reject('Verification failed, please Login again.')
         }
+
         const { name, avatar } = data
+
         commit('SET_NAME', name)
         commit('SET_AVATAR', avatar)
         resolve(data)
@@ -81,7 +83,7 @@ const actions = {
   },*/
 
   // user logout
-  logout({ commit, state }) {
+  /*logout({ commit, state }) {
     return new Promise((resolve, reject) => {
       logout().then(() => {
         removeToken() // must remove  token  first
@@ -92,7 +94,7 @@ const actions = {
         reject(error)
       })
     })
-  },
+  },*/
 
   // remove token
   resetToken({ commit }) {

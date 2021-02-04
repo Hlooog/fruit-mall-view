@@ -16,7 +16,7 @@ export default {
   },
   sendMsg(phone) {
     return request({
-      url: '/sms/send',
+      url: '/sms/withdraw/send',
       method: 'get',
       params: {
         phone: phone

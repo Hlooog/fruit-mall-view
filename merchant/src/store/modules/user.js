@@ -18,7 +18,7 @@ const state = sessionStorage.getItem('state') ? JSON.parse(sessionStorage.getIte
   token: getToken(),
   name: '',
   avatar: '',
-  user_id: 0,
+  id: 0,
   phone: '',
   shop_id: 0,
 }
