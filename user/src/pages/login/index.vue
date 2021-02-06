@@ -5,7 +5,7 @@
                 border-radius: 30px;
                 margin: 50px auto;
                 box-shadow: 0 2px 4px">
-      <h1 style="margin-left: 35%">用户登录</h1>
+      <h1 style="margin-left: 35%;color: #909399">用户登录</h1>
       <el-form style="width: 380px; margin: 0 auto"
                :model="loginForm" :rules="rules"
                ref="loginForm" label-width="100px">
@@ -50,7 +50,7 @@
           this.$store.commit('user/SET_AVATAR', data.avatar)
           this.$store.commit('user/SET_PHONE',data.phone)
           setToken(data.token)
-          this.$router.push({ path: this.redirect || '/' })
+          this.$router.push({ path: this.$route.query.redirect || '/' })
         })
       }
     },
@@ -115,7 +115,7 @@
                 this.$store.commit('user/SET_AVATAR', data.avatar)
                 this.$store.commit('user/SET_PHONE',data.phone)
                 setToken(data.token)
-                this.$router.push({ path: this.redirect || '/' })
+                this.$router.push({ path: this.$route.query.redirect || '/' })
               })
             } else {
               user.smsLogin(this.loginForm).then(response => {
@@ -126,7 +126,7 @@
                 this.$store.commit('user/SET_AVATAR', data.avatar)
                 this.$store.commit('user/SET_PHONE',data.phone)
                 setToken(data.token)
-                this.$router.push({ path: this.redirect || '/' })
+                this.$router.push({ path: this.$route.query.redirect || '/' })
               })
             }
           } else {

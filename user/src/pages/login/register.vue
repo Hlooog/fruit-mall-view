@@ -1,11 +1,11 @@
 <template>
   <div>
-    <div style="height: 500px;
+    <div style="height: 600px;
                   width: 500px;
                   border-radius: 30px;
                   margin: 40px auto;
                   box-shadow: 0 2px 4px">
-      <h1 style="margin-left: 35%">用户注册</h1>
+      <h1 style="margin-left: 35%;color: #909399">用户注册</h1>
       <el-form style="width: 380px; margin: 0 auto" :model="registerForm" :rules="rules" ref="registerForm"
                label-width="100px">
         <el-form-item prop="avatar" v-if="!registerForm.uuid">
@@ -27,6 +27,9 @@
         </el-form-item>
         <el-form-item label="密码" prop="password">
           <el-input style="width: 220px" v-model="registerForm.password" placeholder="密码" show-password></el-input>
+        </el-form-item>
+        <el-form-item label="确认密码" prop="password2">
+          <el-input style="width: 220px" v-model="registerForm.password2" placeholder="确认密码" show-password></el-input>
         </el-form-item>
         <el-form-item label="验证码" prop="code">
           <el-input style="width: 130px" v-model="registerForm.code" placeholder="验证码"></el-input>
@@ -52,11 +55,21 @@
       this.registerForm.uuid = this.$route.query.uuid
     },
     data(){
+      let validatePass2 = (rule, value, callback) => {
+        if (value === '') {
+          callback(new Error('请再次输入密码'));
+        } else if (value !== this.registerForm.password) {
+          callback(new Error('两次输入密码不一致!'));
+        } else {
+          callback();
+        }
+      };
       return {
         registerForm: {
           phone: '',
           name: '',
           password: '',
+          password2: '',
           code: '',
           avatar: '',
           urlList: [],
@@ -71,6 +84,9 @@
           ],
           password:[
             {required: true, message: '密码不能为空', trigger: 'blur'}
+          ],
+          password2: [
+            {validator: validatePass2, trigger: 'blur'}
           ],
           code: [
             {required: true, message: '验证码不能为空', trigger: 'blur'},
@@ -133,7 +149,7 @@
               this.$store.commit('user/SET_AVATAR', data.avatar)
               this.$store.commit('user/SET_PHONE',data.phone)
               setToken(data.token)
-              this.$router.push({ path: this.redirect || '/' })
+              this.$router.push({ path: this.$route.query.redirect || '/' })
             })
           } else {
             return false

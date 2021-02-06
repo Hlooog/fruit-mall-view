@@ -8,7 +8,61 @@ export const constantRoutes = [
   {
     path: '/',
     component: layout,
+    children: [
+      {
+        path: '/',
+        component: () => import('@/pages/home/index'),
+        meta: {title: '首页'}
+      }
+    ]
   },
+  {
+    path: '/apply',
+    component: layout,
+    children: [
+      {
+        path: 'index',
+        component: () => import('@/pages/apply/index'),
+        meta: {title: '申请成为商家'}
+      },
+    ]
+  },
+
+  {
+    path: '/service',
+    component: layout,
+    children: [
+      {
+        path: 'index',
+        component: () => import('@/pages/service/index'),
+        meta: {title: '在线客服'}
+      }
+    ]
+  },
+
+  {
+    path: '/user',
+    component: layout,
+    children: [
+      {
+        path: 'index',
+        component: () => import('@/pages/user/index'),
+        meta: {title: '个人中心'}
+      }
+    ]
+  },
+  {
+    path: '/commodity',
+    component: layout,
+    children: [
+      {
+        path: 'index',
+        component: () => import('@/pages/commodity/index'),
+        meta: {title: '所有商品'}
+      }
+    ]
+  },
+
   {
     path: '/login',
     component: () => import('@/pages/login/index'),
@@ -16,7 +70,7 @@ export const constantRoutes = [
   },
   {
     path: '/register',
-    component: ()=> import('@/pages/login/register'),
+    component: () => import('@/pages/login/register'),
     meta: {title: '注册'}
   }
 ]

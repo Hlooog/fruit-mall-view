@@ -46,5 +46,34 @@ export default {
       method: 'post',
       data: data
     })
+  },
+  getInfo(){
+    return request({
+      url: '/user/get',
+      method: 'get'
+    })
+  },
+  edit(data) {
+    return request({
+      url: '/user/edit',
+      method: 'put',
+      data: data
+    })
+  },
+  sendMsg(phone) {
+    return request({
+      url: '/sms/edit/send',
+      method: 'get',
+      params: {
+        phone: phone
+      }
+    })
+  },
+  deleteAccount(data){
+    return request({
+      url: '/user/delete',
+      method: 'put',
+      data: data
+    })
   }
 }
