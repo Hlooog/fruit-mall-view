@@ -59,6 +59,11 @@ export const constantRoutes = [
         path: 'index',
         component: () => import('@/pages/commodity/index'),
         meta: {title: '所有商品'}
+      },
+      {
+        path: 'info',
+        component: () => import("@/pages/commodity/info"),
+        meta: {title: '商品详情'}
       }
     ]
   },

@@ -18,8 +18,20 @@
             <el-scrollbar style="height: 100%;"
                           ref="scrollbar">
               <ul style="overflow:auto">
-                <li v-for="(item,index) in hotList" :key="index" style="">
-
+                <li v-for="(item,index) in hotList" :key="index" style="list-style: none" @click="toInfo(item.id)">
+                  <el-row>
+                    <el-col :span="6">
+                      <el-image :src="item.url" style="width: 70px; height: 70px; border-radius: 5px"></el-image>
+                    </el-col>
+                    <el-col :span="12">
+                      <el-row style="height: 45px">
+                        <span>{{item.name}}</span>
+                      </el-row>
+                      <el-row>
+                        <span style="color: #F40; font-weight: 700">￥{{item.price}}</span>
+                      </el-row>
+                    </el-col>
+                  </el-row>
                 </li>
               </ul>
             </el-scrollbar>
@@ -30,14 +42,14 @@
     <div style="margin-top: 5%">
       <section>
         <span style="color:#606266; margin-left: 4%">猜你喜欢</span>
-        <el-button type="text" style="margin-left: 85%">更多>></el-button>
+        <el-button type="text" style="margin-left: 85%" @click="toCommodity">更多>></el-button>
         <el-divider></el-divider>
       </section>
     </div>
     <div style="margin-top: 5%">
       <section>
         <span style="color:#606266; margin-left: 4%">最近浏览</span>
-        <el-button type="text" style="margin-left: 85%">更多>></el-button>
+        <el-button type="text" style="margin-left: 85%" @click="toCommodity">更多>></el-button>
         <el-divider></el-divider>
       </section>
     </div>
@@ -45,9 +57,12 @@
 </template>
 
 <script>
+  import commodity from "../../api/commodity";
+
   export default {
     name: "index",
     created() {
+      this.initHome()
     },
     data() {
       return {
@@ -60,11 +75,27 @@
         hotList: [],
       }
     },
-    methods: {}
+    methods: {
+      initHome() {
+        commodity.getHome().then(response => {
+          this.hotList = response.data.hot
+        })
+      },
+      toCommodity() {
+        this.$router.push('/commodity/index')
+      },
+      toInfo(id) {
+        this.$router.push({path: '/commodity/info', query: {id: id}})
+      }
+    },
   }
 </script>
 
 <style>
+
+  .box li {
+    cursor: pointer;
+  }
 
   .box .el-scrollbar__wrap {
     overflow-x: hidden;

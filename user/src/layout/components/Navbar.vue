@@ -93,7 +93,7 @@
     },
     methods: {
       toLogin() {
-        this.$router.push('/login')
+        this.$router.push('/login?redirect=' + this.$router.currentRoute.fullPath)
       },
       toRegister() {
         this.$router.push('/register')

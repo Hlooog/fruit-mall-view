@@ -31,7 +31,7 @@
                     <span>所属种类： {{c.varietyName}}</span>
                   </div>
                   <div>
-                    <span style="color: gold">￥{{c.price}}</span>
+                    <span style="color: #F40; font-weight: 700">￥{{c.price}}</span>
                     <el-button v-if="c.isOnShelf" type="danger" @click="offShelf(c.id)" style="margin-left: 15px" size="small">下架</el-button>
                     <el-button v-else  disabled type="danger" style="margin-left: 15px" size="small">下架</el-button>
                   </div>
