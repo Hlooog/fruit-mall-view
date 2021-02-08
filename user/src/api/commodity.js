@@ -1,4 +1,5 @@
 import request from '@/utils/request'
+import id from "element-ui/src/locale/lang/id";
 
 export default {
   getVarietyList(){
@@ -17,6 +18,12 @@ export default {
   getHome(){
     return request({
       url: '/commodity/home',
+      method: 'get',
+    })
+  },
+  getInfo(id){
+    return request({
+      url: '/commodity/get/info/' + id,
       method: 'get',
     })
   }

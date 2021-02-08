@@ -32,7 +32,7 @@
         <div class="box ib" style="height: 350px; width: 950px">
           <el-scrollbar style="height: 100%">
             <ul>
-              <li v-for="(c,index) in commodityList" :key="index">
+              <li v-for="(c,index) in commodityList" :key="index" @click="toInfo(c.id)">
                 <div>
                   <div>
                     <el-image
@@ -100,6 +100,10 @@
       initBar(){
         this.bar = this.$refs.scrollbar.wrap
       },
+
+      toInfo(id){
+        this.$router.push({path: '/commodity/info', query: {id: id}})
+      }
     },
     mounted(){
       // this.initBar()

@@ -18,6 +18,9 @@
                   v-model="name" @click.native="editName" @blur="edit = true"></el-input>
       </li>
       <li>
+        <el-button type="text" style="font-size: 20px;margin-left: 80px " @click="addressVisible = true">收获地址</el-button>
+      </li>
+      <li>
         <el-button type="text" style="font-size: 20px;margin-left: 80px " @click="editVisible = true">修改密码</el-button>
       </li>
       <li>
@@ -123,7 +126,8 @@
         logout: {
           phone: '',
           code: '',
-        }
+        },
+        addressVisible: false
       }
     },
     methods: {
