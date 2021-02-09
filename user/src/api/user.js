@@ -75,5 +75,31 @@ export default {
       method: 'put',
       data: data
     })
+  },
+  getAddressList(){
+    return request({
+      url: '/address/list',
+      method: 'get',
+    })
+  },
+  delAddress(id){
+    return request({
+      url: '/address/delete/' + id,
+      method: 'delete',
+    })
+  },
+  addAddress(data) {
+    return request({
+      url: '/address/add',
+      method: 'post',
+      data: data
+    })
+  },
+  updateAddress(data){
+    return request ({
+      url: '/address/edit',
+      method: 'put',
+      data: data
+    })
   }
 }

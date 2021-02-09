@@ -18,7 +18,7 @@
                   v-model="name" @click.native="editName" @blur="edit = true"></el-input>
       </li>
       <li>
-        <el-button type="text" style="font-size: 20px;margin-left: 80px " @click="addressVisible = true">收获地址</el-button>
+        <el-button type="text" style="font-size: 20px;margin-left: 80px " @click="getAddress">收货地址管理</el-button>
       </li>
       <li>
         <el-button type="text" style="font-size: 20px;margin-left: 80px " @click="editVisible = true">修改密码</el-button>
@@ -71,6 +71,45 @@
         </el-form-item>
       </el-form>
     </el-dialog>
+
+    <el-dialog
+      title="收货地址"
+      :visible.sync="addressVisible"
+      width="50%">
+      <el-table :data="addressList">
+        <el-table-column label="姓名" prop="name" width="100"></el-table-column>
+        <el-table-column label="电话" prop="phone" width="140"></el-table-column>
+        <el-table-column label="收货地址" prop="address" width="250"></el-table-column>
+        <el-table-column label="操作">
+          <template slot-scope="scope">
+            <el-button type="text" @click="delAddress(scope.row.id)">删除</el-button>
+            <el-button type="text" @click="editAddress(scope.row)">修改</el-button>
+          </template>
+        </el-table-column>
+      </el-table>
+      <el-button type="primary" style="margin: 15px 80%" @click="addAddress">新增地址</el-button>
+    </el-dialog>
+
+    <el-dialog
+      title="收货地址"
+      :visible.sync="editAddressVisible"
+      width="30%">
+      <el-form :model="address" label-width="120px" ref="address" :rules="addressRule">
+        <el-form-item label="收货人姓名" prop="name">
+          <el-input v-model="address.name" style="width: 220px"></el-input>
+        </el-form-item>
+        <el-form-item label="收货人电话" prop="phone">
+          <el-input v-model="address.phone" style="width: 220px"></el-input>
+        </el-form-item>
+        <el-form-item label="收货人地址" prop="address">
+          <el-input v-model="address.address" style="width: 220px"></el-input>
+        </el-form-item>
+        <el-form-item>
+          <el-button v-if="address.id" type="primary" @click="editSubmit">修改</el-button>
+          <el-button v-else type="primary" @click="add">新增</el-button>
+        </el-form-item>
+      </el-form>
+    </el-dialog>
   </div>
 </template>
 
@@ -118,7 +157,7 @@
             {validator: validatePass2, trigger: 'blur'}
           ],
           code: [
-            {required: true, message: '验证码不能为空',trigger: 'blur'}
+            {required: true, message: '验证码不能为空', trigger: 'blur'}
           ]
         },
         editVisible: false,
@@ -127,7 +166,21 @@
           phone: '',
           code: '',
         },
-        addressVisible: false
+        addressVisible: false,
+        editAddressVisible: false,
+        addressList: [],
+        address: {},
+        addressRule: {
+          name: [
+            {required: true, message: '姓名不能为空', trigger: 'blur'}
+          ],
+          phone: [
+            {required: true, message: '手机号码不能为空', trigger: 'blur'}
+          ],
+          address: [
+            {required: true, message: '收获地址不能为空', trigger: 'blur'}
+          ]
+        },
       }
     },
     methods: {
@@ -156,14 +209,14 @@
         }
         user.edit(map)
       },
-      editName(){
+      editName() {
         this.edit = false
       },
-      nameChange(){
+      nameChange() {
         let map = {
           name: this.name
         }
-        user.edit(map).then(()=> {
+        user.edit(map).then(() => {
           this.edit = true
         })
       },
@@ -186,7 +239,7 @@
           }, 1000)
         }
       },
-      editPassword(){
+      editPassword() {
         this.$refs.pwd.validate(v => {
           if (v) {
             let password = md5(this.pwd.password)
@@ -195,18 +248,18 @@
               password: password,
               code: this.pwd.code
             }
-            user.edit(map).then(()=>{
+            user.edit(map).then(() => {
               removeToken() // must remove  token  first
               resetRouter()
               this.$store.commit('user/RESET_STATE')
-              this.$router.push("/login?redirect="+this.$router.currentRoute.fullPath)
+              this.$router.push("/login?redirect=" + this.$router.currentRoute.fullPath)
             })
           } else {
             return false
           }
         })
       },
-      deleteAccount(){
+      deleteAccount() {
         let map = {
           phone: this.logout.phone,
           code: this.logout.code
@@ -219,7 +272,62 @@
           removeToken() // must remove  token  first
           resetRouter()
           this.$store.commit('user/RESET_STATE')
-          this.$router.push("/login?redirect="+this.$router.currentRoute.fullPath)
+          this.$router.push("/login?redirect=" + this.$router.currentRoute.fullPath)
+        })
+      },
+      getAddress() {
+        user.getAddressList().then(response => {
+          this.addressList = response.data
+          this.addressVisible = true
+        })
+      },
+      delAddress(id) {
+        user.delAddress(id).then(() => {
+          let index = 0
+          for (let i = 0; i < this.addressList.length; i++) {
+            if (id === this.addressList[i].id) {
+              index = i
+              break
+            }
+          }
+          this.addressList.splice(index,1)
+        })
+      },
+      editAddress(data) {
+        this.address = data
+        this.editAddressVisible = true
+      },
+      addAddress() {
+        this.address = {}
+        this.editAddressVisible = true
+      },
+      editSubmit() {
+        this.$refs.address.validate(v => {
+          if (v) {
+            user.updateAddress(this.address).then(() => {
+              this.editAddressVisible = false
+            })
+          } else {
+            return false
+          }
+        })
+      },
+      add() {
+        this.$refs.address.validate(v => {
+          if (v) {
+            user.addAddress(this.address).then(response  => {
+              this.editAddressVisible = false
+              let address = {
+                id: response.data,
+                name: this.address.name,
+                phone: this.address.phone,
+                address: this.address.address
+              }
+              this.addressList.push(address)
+            })
+          } else {
+            return false
+          }
         })
       }
     }
@@ -258,7 +366,7 @@
     display: block;
   }
 
-  .inputli >>> .el-input__inner{
+  .inputli >>> .el-input__inner {
     border: 0;
     vertical-align: middle;
     text-align: center;

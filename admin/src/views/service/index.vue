@@ -49,6 +49,7 @@
                       style="width: 500px; height: 120px"
                       :rows="5"
                       v-model="message.content"
+                      :disabled="!message.toPhone"
                       maxlength="255">
             </el-input>
 
@@ -132,7 +133,7 @@
         this.ws.open = this.onOpen
         this.ws.onmessage = this.onMessage
         this.ws.onerror = this.onError
-        this.ws.onclose = this.onClose
+        // this.ws.close = this.onClose
       },
       initUser() {
         service.getLinkUser().then(response => {
@@ -278,8 +279,8 @@
     },
     mounted() {
       this.load()
-      this.onMessage
-      this.onError
+      this.ws.onmessage
+      this.ws.onerror
     },
     computed: {
       ...mapGetters([
@@ -289,7 +290,7 @@
       ])
     },
     destroyed() {
-      this.ws.onclose = this.onClose
+      this.ws.close()
     }
   }
 </script>

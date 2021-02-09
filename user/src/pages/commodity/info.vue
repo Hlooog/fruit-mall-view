@@ -27,7 +27,7 @@
               font-weight: bolder;
               font-size: 30px;
               vertical-align:
-              middle;font-family: Arial">￥{{price}}起</span>
+              middle;font-family: Arial">￥{{min}}起</span>
           </el-card>
         </el-row>
         <el-row>
@@ -89,28 +89,39 @@
     <el-divider></el-divider>
     <el-row>
       <el-card>
-        商品评价
+        商品评价 ({{number - 1}})
+        <el-rate
+          style="float: right"
+          v-model="score"
+          disabled
+          show-score
+          text-color="#f60">
+        </el-rate>
       </el-card>
       <ul>
-        <li style="list-style: none; overflow: auto">
+        <span v-if="cur === 1 && commentList.length === 0" style="width:120px; margin-left: 40%">下一单写个评论吧</span>
+        <li v-else style="list-style: none;" v-for="(item,index) in commentList" :key="index">
           <el-row style="overflow:auto;">
             <el-col :span="2">
-              <el-avatar style="width: 60px; height: 60px;"></el-avatar>
+              <el-avatar style="width: 60px; height: 60px;" :src="item.avatar"></el-avatar>
             </el-col>
             <el-col :span="14">
               <el-row style="height: 20px">
-                用户名
+                <span>{{item.nickname}}</span>
+                <span style="float: right" v-if="item.score >= 4">好评</span>
+                <span style="float: right" v-else-if="item.score >= 2">中评</span>
+                <span style="float: right" v-else>差评</span>
               </el-row>
               <el-row style="margin-top: 20px">
-                <span>这是买过的最好的水果,这是买过的最好的水果,这是买过的最好的水果,这是买过的最好的水果,这是买过的最好的水果,这是买过的最好的水果这是买过的最好的水果,这是买过的最好的水果,这是买过的最好的水果这是买过的最好的水果,这是买过的最好的水果</span>
-                <span style="float: right; font-size: 7px">2020-02-08 12:30:30</span>
+                <span>{{item.content}}</span>
+                <span style="float: right; font-size: 7px">{{item.createTime}}</span>
               </el-row>
             </el-col>
             <el-col :span="8" style="font-size: 14px; height: 100%;">
               <div style="width: 150px; margin: 0 auto">
-                <div><span class="mySpan">规格:</span> 大果</div>
-                <div><span class="mySpan">重量/kg:</span> 2.5</div>
-                <div><span class="mySpan">数量:</span> 5</div>
+                <div><span class="mySpan">规格:</span> {{item.specification}}</div>
+                <div><span class="mySpan">重量/kg:</span> {{item.weight}}</div>
+                <div><span class="mySpan">数量:</span> {{item.num}}}</div>
               </div>
             </el-col>
           </el-row>
@@ -120,7 +131,9 @@
       <el-pagination
         style="float: right; margin-top: 15px"
         layout="prev, pager, next"
-        :total="70">
+        :current-page="cur"
+        @current-change="initComment"
+        :total="total">
       </el-pagination>
     </el-row>
   </div>
@@ -134,6 +147,7 @@
     created() {
       this.id = this.$route.query.id
       this.init()
+      this.initComment()
     },
     data() {
       return {
@@ -148,10 +162,16 @@
         weights: [],
         cSpecification: '',
         cWeight: '',
-        price: 1000000.0,
+        price: 0.0,
+        min: 1000000.0,
         info: [],
         stock: 0,
         infoId: 0,
+        score: 0.0,
+        number: 0,
+        cur: 1,
+        commentList: [],
+        total: 10,
       }
     },
     methods: {
@@ -168,8 +188,8 @@
             if (this.weights.indexOf(weight) == -1) {
               this.weights.push(weight)
             }
-            if (this.price > k.price) {
-              this.price = k.price
+            if (this.min > k.price) {
+              this.min = k.price
             }
             if (!this.info[specification]) {
               this.info[specification] = {}
@@ -190,6 +210,15 @@
           this.shopName = response.data.shopName
           this.shopId = response.data.shopId
           this.urlList = response.data.urlList
+          this.number = response.data.number
+          this.score = response.data.score
+        })
+      },
+
+      initComment(){
+        commodity.getComment(this.id,this.cur).then(resposne => {
+          this.commentList = resposne.data.data
+          this.total  = resposne.data.total
         })
       },
 

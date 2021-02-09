@@ -26,5 +26,15 @@ export default {
       url: '/commodity/get/info/' + id,
       method: 'get',
     })
+  },
+  getComment(id, cur){
+    return request({
+      url: '/comment/page',
+      method: 'get',
+      params: {
+        id: id,
+        cur: cur
+      }
+    })
   }
 }

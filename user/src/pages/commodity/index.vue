@@ -29,30 +29,31 @@
           <el-button type="primary" style="margin-left: 55%" size="mini" @click="submit">确定</el-button>
         </div>
         <el-divider></el-divider>
-        <div class="box ib" style="height: 350px; width: 950px">
-          <el-scrollbar style="height: 100%">
-            <ul>
-              <li v-for="(c,index) in commodityList" :key="index" @click="toInfo(c.id)">
+        <div class="box">
+          <ul>
+            <span v-if="!loading && commodityList.length === 0" style="width:500px;margin-left: 40%">暂无该分类商品，请选择其他分类</span>
+            <li v-else v-for="(c,index) in commodityList" :key="index" @click="toInfo(c.id)">
+              <div>
                 <div>
+                  <el-image
+                    style="width: 100px; height: 100px"
+                    :src="c.url"
+                    fit="fill"></el-image>
                   <div>
-                    <el-image
-                      style="width: 100px; height: 100px"
-                      :src="c.url"
-                      fit="fill"></el-image>
-                    <div>
-                      <span>{{c.name}}</span>
-                    </div>
-                    <div>
-                      <span>所属种类： {{c.varietyName}}</span>
-                    </div>
-                    <div>
-                      <span style="color: #F40; font-weight: 700">￥{{c.price}}</span>
-                    </div>
+                    <span>{{c.name}}</span>
+                  </div>
+                  <div>
+                    <span>所属种类： {{c.varietyName}}</span>
+                  </div>
+                  <div>
+                    <span style="color: #F40; font-weight: 700">￥{{c.price}}</span>
                   </div>
                 </div>
-              </li>
-            </ul>
-          </el-scrollbar>
+              </div>
+            </li>
+          </ul>
+          <p v-if="loading" style="margin-left: 50%" class="el-icon-loading"></p>
+          <p v-if="this.data.cur === -1 && this.commodityList.length > 0" style="margin: 0 auto; width: 80px">没有更多了</p>
         </div>
       </el-card>
     </div>
@@ -62,6 +63,7 @@
 
 <script>
   import commodity from "../../api/commodity";
+
   export default {
     name: "index",
     created() {
@@ -78,40 +80,63 @@
           max: '',
           cur: 1,
         },
-        bar: {}
+        bar: {},
+        loading: false
       }
     },
+
+    mounted() {
+      this.load()
+    },
+
     methods: {
-      initVariety(){
+      initVariety() {
         commodity.getVarietyList().then(response => {
           this.varietyList = response.data
         })
       },
-      initCommodity(){
-        commodity.getCommodity(this.data).then(response => {
-          this.commodityList.push(...response.data)
-        })
+      initCommodity() {
+        if (this.data.cur !== -1) {
+          this.loading = true
+          commodity.getCommodity(this.data).then(response => {
+            this.commodityList.push(...response.data)
+            this.data.cur += 1
+            if (response.data.length < 8) {
+              this.data.cur = -1
+            }
+            this.loading = false
+          })
+        }
       },
-      submit(){
+      submit() {
         this.data.cur = 1
         this.commodityList = []
         this.initCommodity()
       },
-      initBar(){
-        this.bar = this.$refs.scrollbar.wrap
+      load() {
+        let _this = this
+        window.onscroll = function () {
+          //变量scrollTop是滚动条滚动时，距离顶部的距离
+          let scrollTop = document.documentElement.scrollTop || document.body.scrollTop;
+          //变量windowHeight是可视区的高度
+          let windowHeight = document.documentElement.clientHeight || document.body.clientHeight;
+          //变量scrollHeight是滚动条的总高度
+          let scrollHeight = document.documentElement.scrollHeight || document.body.scrollHeight;
+          //滚动条到底部的条件
+          if (scrollTop + windowHeight == scrollHeight) {
+            _this.initCommodity()
+          }
+        }
       },
 
-      toInfo(id){
+      toInfo(id) {
         this.$router.push({path: '/commodity/info', query: {id: id}})
       }
-    },
-    mounted(){
-      // this.initBar()
     }
   }
 </script>
 
-<style>
+<style scoped>
   .box {
     padding: 20px 10px;
     display: inline-block;
@@ -140,7 +165,7 @@
     /*background: lavenderblush;*/
   }
 
-  .ib .el-scrollbar__wrap {
+  /*.ib .el-scrollbar__wrap {
     overflow-x: hidden;
-  }
+  }*/
 </style>
