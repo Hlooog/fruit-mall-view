@@ -26,7 +26,7 @@
         </el-table-column>
         <el-table-column label="操作">
           <template slot-scope="scope">
-            <div v-if="scope.row.isOnShelf">
+            <div v-if="scope.row.up">
               <el-button type="text" @click="off(scope.row.id)">下架</el-button>
               <div style="width: 160px; font-size: 8px; color: #909399">其他操作需下架商品才能操作</div>
             </div>

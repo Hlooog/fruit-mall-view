@@ -44,15 +44,40 @@
         <span style="color:#606266; margin-left: 4%">猜你喜欢</span>
         <el-button type="text" style="margin-left: 85%" @click="toCommodity">更多>></el-button>
         <el-divider></el-divider>
+        <ul>
+          <li style="list-style: none;
+                    float: left;
+                    width: 12%;
+                    margin-bottom: 10px;"
+              v-for="(c,index) in likeList" :key="index" @click="toInfo(c.id)">
+            <div>
+              <div>
+                <el-image
+                  style="width: 100px; height: 100px; border-radius: 5px;"
+                  :src="c.url"
+                  fit="fill"></el-image>
+                <div>
+                  <span>{{c.name}}</span>
+                </div>
+                <div>
+                  <span>所属种类： {{c.varietyName}}</span>
+                </div>
+                <div>
+                  <span style="color: #F40; font-weight: 700">￥{{c.price}}</span>
+                </div>
+              </div>
+            </div>
+          </li>
+        </ul>
       </section>
     </div>
-    <div style="margin-top: 5%">
+    <!--<div style="margin-top: 5%">
       <section>
         <span style="color:#606266; margin-left: 4%">最近浏览</span>
         <el-button type="text" style="margin-left: 85%" @click="toCommodity">更多>></el-button>
         <el-divider></el-divider>
       </section>
-    </div>
+    </div>-->
   </div>
 </template>
 
@@ -62,7 +87,8 @@
   export default {
     name: "index",
     created() {
-      this.initHome()
+      this.getHot()
+      this.getLike()
     },
     data() {
       return {
@@ -73,14 +99,22 @@
           'https://hl-fruit-mall.oss-cn-guangzhou.aliyuncs.com/2021/02/04/4124aa29722b466e8c87282be2b9025efile',
         ],
         hotList: [],
+        likeList: [],
       }
     },
     methods: {
-      initHome() {
+      getHot() {
         commodity.getHome().then(response => {
-          this.hotList = response.data.hot
+          this.hotList = response.data
         })
       },
+
+      getLike(){
+        commodity.getLike().then(response => {
+          this.likeList = response.data
+        })
+      },
+
       toCommodity() {
         this.$router.push('/commodity/index')
       },
@@ -100,4 +134,5 @@
   .box .el-scrollbar__wrap {
     overflow-x: hidden;
   }
+
 </style>

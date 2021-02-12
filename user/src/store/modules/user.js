@@ -1,6 +1,4 @@
 import { getToken, setToken, removeToken } from '../../utils/auth'
-import { resetRouter } from '../../router/index'
-import router from "../../router"
 
 const getDefaultState = () => {
   return {

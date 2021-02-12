@@ -69,6 +69,42 @@ export const constantRoutes = [
   },
 
   {
+    path: '/car',
+    component: layout,
+    children: [
+      {
+        path: 'index',
+        component: ()=> import('@/pages/car/index'),
+        meta: {title: '购物车'}
+      },
+    ]
+  },
+
+  {
+    path: '/order',
+    component: layout,
+    children: [
+      {
+        path: 'index',
+        component: ()=> import('@/pages/order/index'),
+        meta: {title: '我的订单'}
+      },
+    ]
+  },
+
+  {
+    path: '/pay',
+    component: layout,
+    children: [
+      {
+        path: 'index',
+        component: ()=> import('@/pages/pay/index'),
+        meta: {title: '支付'}
+      },
+    ]
+  },
+
+  {
     path: '/login',
     component: () => import('@/pages/login/index'),
     meta: {title: '登录'}

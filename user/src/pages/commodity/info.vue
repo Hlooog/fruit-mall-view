@@ -7,6 +7,9 @@
             <el-image style="height: 100%; width: 100%" :src="item"></el-image>
           </el-carousel-item>
         </el-carousel>
+        <a class="el-icon-star-off"
+           style="color: #999;margin-top: 15px; font-size: 15px;cursor: pointer;"
+           @click="keepCommodity">收藏商品（{{keep}}）</a>
       </el-col>
       <el-col :span="11">
         <el-row style="height: 50px">
@@ -21,7 +24,7 @@
               font-weight: bolder;
               font-size: 30px;
               vertical-align:
-              middle;font-family: Arial">￥{{price}}</span>
+              middle;font-family: Arial">￥{{price * num}}</span>
             <span v-else
                   style="color: #FF0036;
               font-weight: bolder;
@@ -81,7 +84,8 @@
           <el-button style="background-color: #ff0036;
                             border: 1px solid #ff0036;
                             width: 178px;
-                            color: #fff;"><b class="el-icon-shopping-cart-2"></b>加入购物车
+                            color: #fff;"
+                            @click="addCar"><b class="el-icon-shopping-cart-2"></b>加入购物车
           </el-button>
         </el-row>
       </el-col>
@@ -141,17 +145,24 @@
 
 <script>
   import commodity from "../../api/commodity";
+  import {mapGetters} from 'vuex'
+  import shopCar from "../../api/shopCar";
 
   export default {
     name: "info",
     created() {
-      this.id = this.$route.query.id
+      this.commodityId = this.$route.query.id
       this.init()
       this.initComment()
     },
+    computed: {
+      ...mapGetters([
+        'id',
+      ])
+    },
     data() {
       return {
-        id: 0,
+        commodityId: 0,
         radio1: '1',
         num: 1,
         name: '',
@@ -172,11 +183,14 @@
         cur: 1,
         commentList: [],
         total: 10,
+        keep: 0,
+        isKeep: false,
+        car: {}
       }
     },
     methods: {
       init() {
-        commodity.getInfo(this.id).then(response => {
+        commodity.getInfo(this.commodityId).then(response => {
           let voList = response.data.voList;
           for (let i = 0; i < voList.length; i++) {
             let k = voList[i]
@@ -195,6 +209,7 @@
               this.info[specification] = {}
             }
             this.info[specification][weight] = {
+              id: k.id,
               price: k.price,
               stock: k.stock
             }
@@ -202,6 +217,7 @@
               this.info[weight] = {}
             }
             this.info[weight][specification] = {
+              id: k.id,
               price: k.price,
               stock: k.stock
             }
@@ -212,13 +228,15 @@
           this.urlList = response.data.urlList
           this.number = response.data.number
           this.score = response.data.score
+          this.keep = response.data.keep
+          this.isKeep = response.data.isKeep
         })
       },
 
       initComment(){
-        commodity.getComment(this.id,this.cur).then(resposne => {
-          this.commentList = resposne.data.data
-          this.total  = resposne.data.total
+        commodity.getComment(this.commodityId,this.cur).then(response => {
+          this.commentList = response.data.data
+          this.total  = response.data.total
         })
       },
 
@@ -240,6 +258,7 @@
         }
 
       },
+
       clickSpecification(e){
         if (this.cWeight) {
           if (this.info[this.cWeight][e]) {
@@ -255,6 +274,47 @@
           }
         } else {
           e === this.cSpecification ? this.cSpecification = '' : this.cSpecification = e
+        }
+      },
+
+      keepCommodity(){
+        if (this.isKeep) {
+          this.$message({
+            type: 'info',
+            message: '你已经收藏过了，可以到收藏夹看看哦~~~'
+          })
+        } else {
+          commodity.keep(this.commodityId).then(() => {
+            this.isKeep = true
+            this.keep += 1
+            this.$message({
+              type: 'success',
+              message: '收藏成功',
+            })
+          })
+        }
+      },
+      addCar(){
+        if (this.id) {
+          let infoId = this.info[this.cSpecification][this.cWeight].id
+          this.car = {
+            userId: this.id,
+            shopName: this.shopName,
+            shopId: this.shopId,
+            commodityId: this.commodityId,
+            commodityName: this.name,
+            infoId: infoId,
+            quantity: this.num,
+            url: this.urlList[0]
+          }
+          shopCar.createCar(this.car).then(()=>{
+            this.$message({
+              type: 'success',
+              message: '添加购物车成功 去购物车下单吧~~~'
+            })
+          })
+        } else {
+          this.$router.push('/login?redirect=' + this.$router.currentRoute.fullPath)
         }
       },
       buy() {

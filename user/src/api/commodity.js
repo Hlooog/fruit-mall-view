@@ -1,5 +1,4 @@
 import request from '@/utils/request'
-import id from "element-ui/src/locale/lang/id";
 
 export default {
   getVarietyList(){
@@ -17,7 +16,7 @@ export default {
   },
   getHome(){
     return request({
-      url: '/commodity/home',
+      url: '/commodity/monthly',
       method: 'get',
     })
   },
@@ -36,5 +35,29 @@ export default {
         cur: cur
       }
     })
-  }
+  },
+  getLike(){
+    return request({
+      url: '/commodity/like',
+      method: 'get'
+    })
+  },
+  keep(id){
+    return request({
+      url: '/commodity/keep/' + id,
+      method: 'put'
+    })
+  },
+  getKeepList(cur){
+    return request({
+      url: '/commodity/keep/list/' + cur,
+      method: 'get'
+    })
+  },
+  cancel(id) {
+    return request({
+      url: '/commodity/keep/cancel/' + id,
+      method: 'put'
+    })
+  },
 }
