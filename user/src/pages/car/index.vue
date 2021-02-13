@@ -83,7 +83,7 @@
                  font-weight: lighter;
                  float: right;
                  margin-top: -10px"
-                @click="buy">结算
+                 @click="buy">结算
       </el-button>
       <el-button v-else style="background:#3c3c3c;
         color: white;
@@ -93,12 +93,37 @@
                  disabled>结算
       </el-button>
     </el-card>
+
+    <el-dialog
+      title="选择地址"
+      :visible.sync="addressVisible"
+      width="50%">
+      <div  v-for="(item,index) in addressList" :key="index" style="height: 70px">
+        <el-radio style="width: 500px"
+                  :label="item.id" v-model="order.addressId"
+                  border>
+        <span>
+            <span>{{item.name}}</span>
+            <span>{{item.phone}}</span>
+            <span style="float:right;">{{item.address}}</span>
+        </span>
+        </el-radio>
+      </div>
+      <div>
+        <el-button style="margin-left: 80%;
+          background:rgb(255, 0, 54);
+          color: white"
+          @click="createOrder">提交订单</el-button>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
 <script>
   import shopCar from "../../api/shopCar";
   import {accAdd, accDiv, accMul, subtr} from "../../utils/cal";
+  import user from "../../api/user";
+  import order from "../../api/order";
 
   export default {
     name: "index",
@@ -124,6 +149,12 @@
         checkId: {},
         num: 0,
         price: 0.0,
+        addressVisible: false,
+        order: {
+          carIds: [],
+          addressId: 0,
+        },
+        addressList: []
       }
     },
     methods: {
@@ -247,9 +278,9 @@
         return accMul(quantity, price)
       },
 
-      moveOut(index,id,price,quantity) {
+      moveOut(index, id, price, quantity) {
         if (this.checked[id]) {
-          this.price = subtr(this.price, accMul(price,quantity))
+          this.price = subtr(this.price, accMul(price, quantity))
         }
         delete this.checked[id]
         if (this.list[index].length === 1) {
@@ -258,7 +289,7 @@
           console.log(this.list)
         } else {
           let j = 0
-          for (let i = 0; i <this.list[index].length; i++) {
+          for (let i = 0; i < this.list[index].length; i++) {
             if (this.list[index][i].id === id) {
               j = i
               break
@@ -269,15 +300,23 @@
         shopCar.moveOut(id)
       },
 
-      buy(){
-        let arr = []
+      buy() {
+        this.order.carIds = []
         for (let key in this.checked) {
           if (this.checked[key]) {
-            arr.push(key)
+            this.order.carIds.push(key)
           }
         }
-        this.$store.commit('buy/SET_IDS',arr)
-        this.$router.push('/pay/index')
+        user.getAddressList().then(response => {
+          this.addressVisible = true
+          this.addressList = response.data
+        })
+      },
+
+      createOrder(){
+        order.createCar(this.order).then(response=>{
+          // TODO 跳转支付页面
+        })
       }
     },
   }

@@ -24,7 +24,7 @@
               font-weight: bolder;
               font-size: 30px;
               vertical-align:
-              middle;font-family: Arial">￥{{price * num}}</span>
+              middle;font-family: Arial">￥{{calPrice(num,price)}}</span>
             <span v-else
                   style="color: #FF0036;
               font-weight: bolder;
@@ -140,6 +140,30 @@
         :total="total">
       </el-pagination>
     </el-row>
+
+
+    <el-dialog
+      title="选择地址"
+      :visible.sync="addressVisible"
+      width="50%">
+      <div  v-for="(item,index) in addressList" :key="index" style="height: 70px">
+        <el-radio style="width: 500px"
+                  :label="item.id" v-model="order.addressId"
+                  border>
+        <span>
+            <span>{{item.name}}</span>
+            <span>{{item.phone}}</span>
+            <span style="float:right;">{{item.address}}</span>
+        </span>
+        </el-radio>
+      </div>
+      <div>
+        <el-button style="margin-left: 80%;
+          background:rgb(255, 0, 54);
+          color: white"
+                   @click="createOrder">提交订单</el-button>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
@@ -147,6 +171,9 @@
   import commodity from "../../api/commodity";
   import {mapGetters} from 'vuex'
   import shopCar from "../../api/shopCar";
+  import user from "../../api/user";
+  import order from "../../api/order";
+  import {accMul} from "../../utils/cal";
 
   export default {
     name: "info",
@@ -185,7 +212,18 @@
         total: 10,
         keep: 0,
         isKeep: false,
-        car: {}
+        car: {},
+        addressVisible: false,
+        addressList: [],
+        order: {
+          addressId: 0,
+          commodityId: 0,
+          infoId: 0,
+          shopId: 0,
+          shopName: '',
+          commodityName: '',
+          quantity: 0,
+        }
       }
     },
     methods: {
@@ -277,6 +315,10 @@
         }
       },
 
+      calPrice(num, price){
+        return accMul(num,price)
+      },
+
       keepCommodity(){
         if (this.isKeep) {
           this.$message({
@@ -318,6 +360,22 @@
         }
       },
       buy() {
+        this.order.quantity = this.num
+        this.order.commodityId = this.commodityId
+        this.order.commodityName = this.name
+        this.order.shopId = this.shopId
+        this.order.shopName = this.shopName
+        this.order.infoId = this.info[this.cSpecification][this.cWeight].id
+        user.getAddressList().then(response => {
+          this.addressVisible = true
+          this.addressList = response.data
+        })
+      },
+      createOrder(){
+        // TODO 跳转支付
+        order.create(this.order).then(response => {
+
+        })
       }
     },
   }
