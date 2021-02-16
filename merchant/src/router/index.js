@@ -51,7 +51,7 @@ export const constantRoutes = [
       path: 'dashboard',
       name: 'Dashboard',
       component: () => import('@/views/dashboard/index'),
-      meta: { title: '商家后台', icon: 'dashboard' }
+      meta: {title: '商家后台', icon: 'dashboard'}
     }]
   },
 
@@ -62,19 +62,36 @@ export const constantRoutes = [
       path: 'index',
       name: 'Index',
       component: () => import('@/views/commodity/index'),
-      meta: { title: '商品管理', icon: 'el-icon-s-goods' }
+      meta: {title: '商品管理', icon: 'el-icon-s-goods'}
     }]
   },
 
   {
     path: '/order',
     component: Layout,
-    children: [{
-      path: 'index',
-      name: 'Index',
-      component: () => import('@/views/order/index'),
-      meta: { title: '订单管理', icon: 'el-icon-s-order' }
-    }]
+    meta: {title: '订单管理', icon: 'el-icon-s-order'},
+    children: [
+      {
+        path: 'index',
+        name: 'Index',
+        component: () => import('@/views/order/index'),
+        meta: {title: '所有订单', icon: 'el-icon-s-order'}
+      },
+
+      {
+        path: 'toBeDelivered',
+        name: 'ToBeDelivered',
+        component: () => import('@/views/order/toBeDelivered'),
+        meta: {title: '待发货', icon: 'el-icon-warning'}
+      },
+
+      {
+        path: 'refund',
+        name: 'Refund',
+        component: () => import('@/views/order/refund'),
+        meta: {title: '退款申请', icon: 'el-icon-s-check'}
+      }
+    ]
   },
   {
     path: '/shop',
@@ -83,7 +100,7 @@ export const constantRoutes = [
       path: 'index',
       name: 'Index',
       component: () => import('@/views/shop/index'),
-      meta: { title: '店铺管理', icon: 'el-icon-s-shop' }
+      meta: {title: '店铺管理', icon: 'el-icon-s-shop'}
     }]
   },
 
@@ -94,7 +111,7 @@ export const constantRoutes = [
       path: 'index',
       name: 'Index',
       component: () => import('@/views/balance/index'),
-      meta: { title: '提现记录', icon: 'el-icon-s-order' }
+      meta: {title: '提现记录', icon: 'el-icon-s-order'}
     }]
   },
 
@@ -105,17 +122,17 @@ export const constantRoutes = [
       path: 'index',
       name: 'Index',
       component: () => import('@/views/service/index'),
-      meta: { title: '在线客服', icon: 'el-icon-service' }
+      meta: {title: '在线客服', icon: 'el-icon-service'}
     }]
   },
 
   // 404 page must be placed at the end !!!
-  { path: '*', redirect: '/404', hidden: true }
+  {path: '*', redirect: '/404', hidden: true}
 ]
 
 const createRouter = () => new Router({
   // mode: 'history', // require service support
-  scrollBehavior: () => ({ y: 0 }),
+  scrollBehavior: () => ({y: 0}),
   routes: constantRoutes
 })
 

@@ -45,7 +45,7 @@
             {{order.address}}
           </el-col>
         </el-row>
-        <el-row v-for="(info,i) in order.infoList"  :key="i">
+        <el-row v-for="(info,i) in order.infoList" :key="i">
           <el-row>
             <el-col style="width: 130px;">
               <div style="height: 100px; width: 100px">
@@ -53,9 +53,12 @@
               </div>
             </el-col>
             <el-col style="width: 200px">
-            <span style="line-height: 70px;">
-              {{info.commodityName}}
-            </span>
+              <div style="line-height: 70px;">
+                {{info.commodityName}}
+              </div>
+              <div>
+                {{info.shopName}}
+              </div>
             </el-col>
             <el-col style="width: 190px">
               <div style="width: 95%;
@@ -81,11 +84,24 @@
                 {{info.statusStr}}
               </div>
             </el-col>
-            <el-col style="width: 170px">
-              <el-button type="text" v-if="info.status === 0" style="margin-top: 15px">去支付</el-button>
-              <el-button type="text" v-if="info.status === 1" style="margin-top: 15px">申请退款</el-button>
-              <el-button type="text" v-if="info.status === 2" style="margin-top: 15px">申请退款</el-button>
-              <el-button type="text" v-if="info.status === 0" style="margin-top: 15px">取消订单</el-button>
+            <el-col style="width: 180px">
+              <el-button type="text" v-if="info.status === 0"
+                         style="margin-top: 15px" @click="toPay(order.orderId)">
+                去支付
+              </el-button>
+              <el-button type="text"
+                         v-if="info.status === 0"
+                         style="margin-top: 15px" @click="cancel(order.orderId,index,i)">取消订单
+              </el-button>
+              <el-button type="text" v-if="info.status === 1 || info.status === 2"
+                         style="margin-top: 15px" @click="applyRefund(info.id,index,i)">申请退款
+              </el-button>
+              <el-button type="text" v-if="info.status === 2"
+                         style="margin-top: 15px" @click="confirm(info.id,index,i)">确认收货
+              </el-button>
+              <el-button type="text" v-if="info.status === 3"
+                         style="margin-top: 15px" @click="addComment(info.id,index,i)">评论商品</el-button>
+              <div v-if="info.status === 0" style="font-size: 8px; ">{{data[order.orderId].time}}秒后订单被取消</div>
             </el-col>
           </el-row>
           <el-row>
@@ -97,17 +113,36 @@
 
     <el-pagination
       style="margin: 20px 40%"
-      :current-page="cur"
+      :current-page.sync="cur"
       @current-change="init"
       layout="prev, pager, next"
       :total="total">
     </el-pagination>
+
+    <el-dialog title="添加评论" :visible.sync="visible">
+      <el-input
+        type="textarea"
+        :rows="4"
+        placeholder="请发表你的意见"
+        v-model="comment.content"
+        maxlength='255'>
+      </el-input>
+      <el-rate
+        allow-half
+        style="margin: 15px 20px"
+        v-model="comment.score"
+        :texts="level"
+        show-text>
+      </el-rate>
+      <el-button type="primary" @click="submit">提交</el-button>
+    </el-dialog>
   </div>
 </template>
 
 <script>
   import {accMul} from "../../utils/cal";
   import order from "../../api/order";
+  import {mapGetters} from 'vuex'
 
   export default {
     name: "index",
@@ -120,25 +155,89 @@
     },
     created() {
       this.init()
+
+    },
+    computed: {
+      ...mapGetters([
+        'data',
+        'id',
+        'avatar',
+      ])
     },
     data() {
       return {
         orderList: [],
         cur: 1,
-        total: 10
+        total: 10,
+        visible: false,
+        comment: {
+          id: 0,
+          content: '',
+          score: 0.0,
+        },
+        level: [
+          '差评',
+          '中评',
+          '中评',
+          '好评',
+          '好评',
+        ],
+        index: 0,
+        i: 0,
       }
     },
     methods: {
-      init(){
+      init() {
+        this.orderList = []
         order.userPage(this.cur).then(response => {
-          this.orderList = response.data.data
+          // this.orderList = response.data.data
           this.total = response.data.total
+          for (let i = 0; i < response.data.data.length; i++) {
+            this.$set(this.orderList,i,response.data.data[i])
+          }
         })
       },
 
-      calPrice(quantity,price) {
-        return accMul(quantity,price)
+      calPrice(quantity, price) {
+        return accMul(quantity, price)
       },
+
+      toPay(orderId) {
+        this.$router.push({path: '/pay/index', query: {orderId: orderId}})
+      },
+
+      applyRefund(id, index, i) {
+        order.applyRefund(id).then(() => {
+          this.orderList[index].infoList[i].status = 4
+          this.orderList[index].infoList[i].statusStr = '退款中'
+        })
+      },
+      cancel(orderId, index,i) {
+        order.cancel(orderId).then(() => {
+          this.orderList[index].infoList[i].status = 6
+          this.orderList[index].infoList[i].statusStr = '取消订单'
+          this.$store.dispatch('order/delOrder', orderId)
+        })
+      },
+      confirm(id, index,i){
+        order.confirm(id).then(() => {
+          this.orderList[index].infoList[i].status = 3
+          this.orderList[index].infoList[i].statusStr = '交易完成'
+        })
+      },
+      addComment(id, index,i) {
+        this.comment.id = id
+        this.visible = true
+        this.index = index
+        this.i = i
+      },
+      submit(){
+        order.addComment(this.comment).then(() => {
+          this.orderList[this.index].infoList[this.i].status = 7
+          this.orderList[this.index].infoList[this.i].statusStr = '已评论'
+          this.visible = false
+        })
+      }
     },
   }
 </script>

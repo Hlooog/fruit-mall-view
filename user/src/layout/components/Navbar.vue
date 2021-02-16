@@ -21,10 +21,13 @@
           <el-button type="text" style="margin-left: -5px" @click="toRegister">注册</el-button>
         </li>
         <li>
-          <el-button type="text" style="margin-left: 550px;" @click="toHome">首页</el-button>
+          <el-button type="text" style="margin-left: 460px;" @click="toHome">首页</el-button>
         </li>
         <li>
           <el-button type="text" style="margin-left: 25px;" @click="toCommodity">更多商品</el-button>
+        </li>
+        <li>
+          <el-button type="text" style="margin-left: 25px;" @click="toShop">所有商家</el-button>
         </li>
         <li>
           <el-button type="text" style="margin-left: 25px;" @click="toOrder">我的订单</el-button>
@@ -96,7 +99,7 @@
       </el-table>
       <el-pagination
         style="margin: 0 auto; min-width: 100px"
-        :current-page="cur"
+        :current-page.sync="cur"
         @current-change="getKeepList"
         layout="prev, pager, next"
         :total="total">
@@ -219,6 +222,9 @@
       },
       toOrder(){
         this.$router.push('/order/index')
+      },
+      toShop(){
+        this.$router.push("/shop/index")
       }
     }
   }

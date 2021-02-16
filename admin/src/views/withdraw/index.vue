@@ -53,7 +53,7 @@
     <el-row>
       <el-pagination
         style="margin: 35px 40%"
-        :current-page="page.cur"
+        :current-page.sync="page.cur"
         @current-change="init"
         background
         layout="prev, pager, next"

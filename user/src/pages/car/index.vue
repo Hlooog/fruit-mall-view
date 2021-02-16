@@ -124,6 +124,7 @@
   import {accAdd, accDiv, accMul, subtr} from "../../utils/cal";
   import user from "../../api/user";
   import order from "../../api/order";
+  import {mapGetters} from 'vuex'
 
   export default {
     name: "index",
@@ -154,9 +155,17 @@
           carIds: [],
           addressId: 0,
         },
-        addressList: []
+        addressList: [],
+        orderId: '',
       }
     },
+
+    computed:{
+      ...mapGetters([
+        'data'
+      ])
+    },
+
     methods: {
 
       init() {
@@ -313,9 +322,29 @@
         })
       },
 
+      decreaseTime(){
+        setTimeout(() => {
+          if (this.data[this.orderId].time > 0) {
+            this.$store.commit('order/DECREASE',this.orderId)
+            this.decreaseTime()
+          } else {
+            this.$store.commit('order/DEL_ORDER',this.orderId)
+          }
+        },1000)
+      },
+
       createOrder(){
         order.createCar(this.order).then(response=>{
-          // TODO 跳转支付页面
+          this.orderId = response.data.orderId
+          let order = {
+            orderId: this.orderId,
+            codeUrl: response.data.codeUrl,
+            price: response.data.price,
+            time: 180,
+          }
+          this.$store.commit('order/SET_ORDER',order)
+          this.$router.push({path: '/pay/index', query: {orderId: response.data.orderId}})
+          this.decreaseTime()
         })
       }
     },

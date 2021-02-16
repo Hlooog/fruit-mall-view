@@ -105,6 +105,23 @@ export const constantRoutes = [
   },
 
   {
+    path: '/shop',
+    component: layout,
+    children: [
+      {
+        path: 'index',
+        component: ()=> import('@/pages/shop/index'),
+        meta: {title: '商家'}
+      },
+      {
+        path: 'info',
+        component: () => import('@/pages/shop/info'),
+        meta: {title: '具体商家'},
+      }
+    ]
+  },
+
+  {
     path: '/login',
     component: () => import('@/pages/login/index'),
     meta: {title: '登录'}

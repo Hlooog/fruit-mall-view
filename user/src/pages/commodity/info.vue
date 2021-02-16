@@ -111,7 +111,7 @@
             </el-col>
             <el-col :span="14">
               <el-row style="height: 20px">
-                <span>{{item.nickname}}</span>
+                <span>{{item.name}}</span>
                 <span style="float: right" v-if="item.score >= 4">好评</span>
                 <span style="float: right" v-else-if="item.score >= 2">中评</span>
                 <span style="float: right" v-else>差评</span>
@@ -135,7 +135,7 @@
       <el-pagination
         style="float: right; margin-top: 15px"
         layout="prev, pager, next"
-        :current-page="cur"
+        :current-page.sync="cur"
         @current-change="initComment"
         :total="total">
       </el-pagination>
@@ -185,6 +185,7 @@
     computed: {
       ...mapGetters([
         'id',
+        'data'
       ])
     },
     data() {
@@ -223,7 +224,8 @@
           shopName: '',
           commodityName: '',
           quantity: 0,
-        }
+        },
+        orderId: '',
       }
     },
     methods: {
@@ -371,12 +373,34 @@
           this.addressList = response.data
         })
       },
-      createOrder(){
-        // TODO 跳转支付
-        order.create(this.order).then(response => {
 
+      decreaseTime() {
+        setTimeout(() => {
+          if (this.data[this.orderId].time > 0) {
+            this.$store.dispatch('order/decrease',this.orderId)
+            this.decreaseTime()
+          } else {
+            delete this.$store.commit('order/DEL_ORDER',this.orderId)
+            this.$router.push('/order/index')
+          }
+        },1000)
+      },
+
+      createOrder(){
+        order.create(this.order).then(response => {
+          this.orderId = response.data.orderId
+          let order = {
+            orderId: this.orderId,
+            codeUrl: response.data.codeUrl,
+            price: response.data.price,
+            time: 180,
+          }
+          // this.$store.commit('order/SET_ORDER',order)
+          this.$store.dispatch("order/setOrder",order)
+          this.$router.push({path: '/pay/index', query: {orderId: this.orderId}})
+          this.decreaseTime()
         })
-      }
+      },
     },
   }
 

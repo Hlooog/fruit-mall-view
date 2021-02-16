@@ -52,6 +52,11 @@
         <el-table-column label="快递单号" prop="trackNumber" width="150"></el-table-column>
         <el-table-column label="下单时间" prop="createTime" width="120"></el-table-column>
         <el-table-column label="订单状态" prop="statusStr" width="80"></el-table-column>
+        <el-table-column label="操作" width="100" fixed="right">
+          <template slot-scope="scope">
+            <el-button type="text" @click="fillIn(scope.row.id)">填写快递单号</el-button>
+          </template>
+        </el-table-column>
       </el-table>
     </el-row>
     <el-row>
@@ -63,6 +68,12 @@
         :total="total">
       </el-pagination>
     </el-row>
+
+    <el-dialog width="40%" :visible.sync="visible">
+      快递单号：
+      <el-input style="width: 220px" v-model="trackNumber"></el-input>
+      <el-button type="primary" style="margin-left: 10%" @click="submit">确认</el-button>
+    </el-dialog>
   </div>
 </template>
 
@@ -72,7 +83,7 @@
   import {accMul} from "@/utils/cal";
 
   export default {
-    name: "index",
+    name: "toBeDelivered",
     created() {
       this.page.shopId = this.shop_id
       this.init()
@@ -92,11 +103,14 @@
           startTime: '',
           endTime: '',
           cur: 1,
-          status: '',
+          status: 1,
         },
         time: [],
         orderList: [],
-        total: 10
+        total: 10,
+        visible: false,
+        id: 0,
+        trackNumber: ''
       }
     },
     methods: {
@@ -122,7 +136,29 @@
         }
         this.init()
       },
-      calPrice(price,quantity){
+      fillIn(id) {
+        this.id = id
+        this.trackNumber = ''
+        this.visible = true
+      },
+      submit() {
+        let data = {
+          id: this.id,
+          trackNumber: this.trackNumber
+        }
+        order.ship(data).then(() => {
+          let index = 0
+          for (let i = 0; i < this.orderList.length; i++) {
+            if (this.id === this.orderList[i].id) {
+              index = i
+              break
+            }
+          }
+          this.visible = false
+          this.orderList.splice(index, 1)
+        })
+      },
+      calPrice(price, quantity) {
         return accMul(price, quantity)
       },
       exportData() {
@@ -137,3 +173,4 @@
 <style scoped>
 
 </style>
+

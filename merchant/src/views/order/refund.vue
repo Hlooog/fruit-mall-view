@@ -19,9 +19,6 @@
         </el-date-picker>
       </el-col>
 
-      <el-col :span="6">
-        <el-button type="text" style="margin: 30px 15%" @click="exportData">导出数据</el-button>
-      </el-col>
     </el-row>
 
     <el-row>
@@ -52,6 +49,12 @@
         <el-table-column label="快递单号" prop="trackNumber" width="150"></el-table-column>
         <el-table-column label="下单时间" prop="createTime" width="120"></el-table-column>
         <el-table-column label="订单状态" prop="statusStr" width="80"></el-table-column>
+        <el-table-column label="操作" width="100" fixed="right">
+          <template slot-scope="scope">
+            <el-button type="text" @click="agree(scope.row.id)">退款</el-button>
+            <el-button type="text" @click="refuse(scope.row.id)">拒绝</el-button>
+          </template>
+        </el-table-column>
       </el-table>
     </el-row>
     <el-row>
@@ -72,7 +75,7 @@
   import {accMul} from "@/utils/cal";
 
   export default {
-    name: "index",
+    name: "refund",
     created() {
       this.page.shopId = this.shop_id
       this.init()
@@ -92,7 +95,7 @@
           startTime: '',
           endTime: '',
           cur: 1,
-          status: '',
+          status: 4,
         },
         time: [],
         orderList: [],
@@ -125,9 +128,28 @@
       calPrice(price,quantity){
         return accMul(price, quantity)
       },
-      exportData() {
-        order.exportData(this.page).then(response => {
-          window.location.href = response.data
+      agree(id){
+        order.agree(id).then(() => {
+          let index = 0
+          for (let i = 0; i < this.orderList.length; i++) {
+            if (id === this.orderList[i].id) {
+              index = i
+              break
+            }
+          }
+          this.orderList.splice(index,1)
+        })
+      },
+      refuse(id){
+        order.refuse(id).then(() => {
+          let index = 0
+          for (let i = 0; i < this.orderList.length; i++) {
+            if (id === this.orderList[i].id) {
+              index = i
+              break
+            }
+          }
+          this.orderList.splice(index,1)
         })
       }
     }
@@ -137,3 +159,4 @@
 <style scoped>
 
 </style>
+

@@ -100,7 +100,7 @@
       <el-pagination
         style="margin-left: 30%"
         background
-        :current-page="page.cur"
+        :current-page.sync="page.cur"
         @current-change="init"
         layout="prev, pager, next"
         :total="total">
