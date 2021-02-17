@@ -113,5 +113,11 @@ export default {
       url: '/merchantInfo/refuse/' + id,
       method: 'put',
     })
+  },
+  getReport(){
+    return request({
+      url: '/user/report',
+      method: 'get'
+    })
   }
 }

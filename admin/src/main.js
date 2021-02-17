@@ -15,6 +15,9 @@ import router from './router'
 import '@/icons' // icon
 import '@/permission' // permission control
 
+import eCharts from "echarts";
+Vue.prototype.$echarts = eCharts;
+
 import api from './api/index.js'
 
 Vue.prototype.$api = api

@@ -55,6 +55,12 @@
       </el-col>
     </el-row>
 
+    <h1 style="margin-left: 40%;">订单数据</h1>
+    <el-row style="margin-top: 55px">
+      <div id="order" style="width: 100%; min-height: 500px"></div>
+
+      <div id="price" style="width: 100%; min-height: 500px"></div>
+    </el-row>
     <el-dialog
       :visible.sync="withdrawVisible"
       title="提现"
@@ -85,16 +91,20 @@
 
 <script>
   import balance from "@/api/balance";
+  import {mapGetters} from 'vuex';
+  import order from "@/api/order";
 
   export default {
     name: 'Dashboard',
     created() {
       this.getBalance()
+      this.showOrder()
+      this.showPrice()
     },
     data() {
       const validatePrice = (rule, value, callback) => {
         if (this.withdraw.amount > this.balance.withdrawAble) {
-          callback(new Error('Please enter the correct user name'))
+          callback(new Error('提现金额大于可提现金额'))
         } else {
           callback()
         }
@@ -127,8 +137,17 @@
           ]
         },
         hasCode: true,
-        num: 60
+        num: 60,
+        ox: [],
+        oy: [],
+        px: [],
+        py: [],
       }
+    },
+    computed:{
+      ...mapGetters([
+        'shop_id'
+      ])
     },
     methods: {
       getBalance() {
@@ -170,7 +189,107 @@
             return false
           }
         })
-      }
+      },
+
+      showOrder(){
+        this.ox = []
+        this.oy = []
+        order.getNumberReport(this.shop_id).then(response => {
+          let list = response.data
+          for (let i = 0; i < list.length; i++) {
+            this.ox.push(list[i].date)
+            this.oy.push(list[i].number)
+          }
+          this.orderChart()
+        })
+      },
+
+      orderChart() {
+        let oChart = this.$echarts.init(document.getElementById("order"));
+        let option = {
+          title: {
+            text: "订单数量"
+          },
+          tooltip: {
+            trigger: 'axis'
+          },
+          toolbox: {
+            show: true,
+            feature: {
+              mark: {show: true},
+              dataView: {show: true, readOnly: true},
+              restore: {show: true},
+              saveAsImage: {show: true}
+            }
+          },
+          xAxis: {
+            name: '日期',
+            type: 'category',
+            data: this.ox
+          },
+          yAxis: {
+            name: '数量',
+          },
+          series: [
+            {
+              type: "line",
+              data: this.oy
+            },
+          ]
+        };
+        // 使用刚指定的配置项和数据显示图表。
+        oChart.setOption(option);
+      },
+
+      showPrice(){
+        this.px = []
+        this.py = []
+        order.getPriceReport(this.shop_id).then(response => {
+          let list = response.data
+          for (let i = 0; i < list.length; i++) {
+            this.px.push(list[i].date)
+            this.py.push(list[i].price)
+          }
+          this.priceChart()
+        })
+      },
+
+      priceChart() {
+        let oChart = this.$echarts.init(document.getElementById("price"));
+        let option = {
+          title: {
+            text: "销售金额"
+          },
+          tooltip: {
+            trigger: 'axis'
+          },
+          toolbox: {
+            show: true,
+            feature: {
+              mark: {show: true},
+              dataView: {show: true, readOnly: true},
+              restore: {show: true},
+              saveAsImage: {show: true}
+            }
+          },
+          xAxis: {
+            name: '日期',
+            type: 'category',
+            data: this.px
+          },
+          yAxis: {
+            name: '金额',
+          },
+          series: [
+            {
+              type: "line",
+              data: this.py
+            },
+          ]
+        };
+        // 使用刚指定的配置项和数据显示图表。
+        oChart.setOption(option);
+      },
     }
   }
 </script>

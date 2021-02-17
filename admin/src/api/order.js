@@ -30,4 +30,18 @@ export default {
       method: 'put',
     })
   },
+
+  numberReport(){
+    return request({
+      url: '/orders/admin/number/report',
+      method: 'get',
+    })
+  },
+
+  priceReport(){
+    return request({
+      url: '/orders/admin/price/report',
+      method: 'get',
+    })
+  }
 }

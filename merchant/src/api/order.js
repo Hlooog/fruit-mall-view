@@ -45,5 +45,17 @@ export default {
       url: '/orders/refuse/' + id,
       method: 'put'
     })
+  },
+  getNumberReport(shopId){
+    return request({
+      url: '/orders/number/report/' + shopId,
+      method: 'get'
+    })
+  },
+  getPriceReport(shopId) {
+    return request({
+      url: '/orders/price/report/' + shopId,
+      method: 'get'
+    })
   }
 }
