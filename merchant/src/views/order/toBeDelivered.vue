@@ -128,12 +128,14 @@
           this.page.startTime = ''
           this.page.endTime = ''
         }
+        this.page.cur = 1
         this.init()
       },
       keyChange() {
         if (typeof (this.page.userId) !== 'number') {
           this.page.userId = ''
         }
+        this.page.cur = 1
         this.init()
       },
       fillIn(id) {

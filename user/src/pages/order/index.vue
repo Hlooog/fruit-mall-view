@@ -54,7 +54,9 @@
             </el-col>
             <el-col style="width: 200px">
               <div style="line-height: 70px;">
+                <a @click="toInfo(info.commodityId)" style="cursor: pointer;">
                 {{info.commodityName}}
+                </a>
               </div>
               <div>
                 {{info.shopName}}
@@ -237,6 +239,9 @@
           this.orderList[this.index].infoList[this.i].statusStr = '已评论'
           this.visible = false
         })
+      },
+      toInfo(id) {
+        this.$router.push({path: '/commodity/info', query: {id: id}})
       }
     },
   }

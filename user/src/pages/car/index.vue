@@ -38,7 +38,9 @@
                   <el-image :src="i.url" style="height: 60px; width: 60px"></el-image>
                 </el-col>
                 <el-col :span="4">
-                  {{i.commodityName}}
+                  <a @click="toInfo(i.commodityId)" style="cursor: pointer;">
+                    {{i.commodityName}}
+                  </a>
                 </el-col>
                 <el-col :span="4">
                   <div style="width: 95%;
@@ -98,7 +100,7 @@
       title="选择地址"
       :visible.sync="addressVisible"
       width="50%">
-      <div  v-for="(item,index) in addressList" :key="index" style="height: 70px">
+      <div v-for="(item,index) in addressList" :key="index" style="height: 70px">
         <el-radio style="width: 500px"
                   :label="item.id" v-model="order.addressId"
                   border>
@@ -113,7 +115,8 @@
         <el-button style="margin-left: 80%;
           background:rgb(255, 0, 54);
           color: white"
-          @click="createOrder">提交订单</el-button>
+                   @click="createOrder">提交订单
+        </el-button>
       </div>
     </el-dialog>
   </div>
@@ -160,7 +163,7 @@
       }
     },
 
-    computed:{
+    computed: {
       ...mapGetters([
         'data'
       ])
@@ -322,19 +325,19 @@
         })
       },
 
-      decreaseTime(){
+      decreaseTime() {
         setTimeout(() => {
           if (this.data[this.orderId].time > 0) {
-            this.$store.commit('order/DECREASE',this.orderId)
+            this.$store.commit('order/DECREASE', this.orderId)
             this.decreaseTime()
           } else {
-            this.$store.commit('order/DEL_ORDER',this.orderId)
+            this.$store.commit('order/DEL_ORDER', this.orderId)
           }
-        },1000)
+        }, 1000)
       },
 
-      createOrder(){
-        order.createCar(this.order).then(response=>{
+      createOrder() {
+        order.createCar(this.order).then(response => {
           this.orderId = response.data.orderId
           let order = {
             orderId: this.orderId,
@@ -342,10 +345,13 @@
             price: response.data.price,
             time: 180,
           }
-          this.$store.commit('order/SET_ORDER',order)
+          this.$store.commit('order/SET_ORDER', order)
           this.$router.push({path: '/pay/index', query: {orderId: response.data.orderId}})
           this.decreaseTime()
         })
+      },
+      toInfo(id) {
+        this.$router.push({path: '/commodity/info', query: {id: id}})
       }
     },
   }

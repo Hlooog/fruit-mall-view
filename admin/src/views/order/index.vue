@@ -121,6 +121,7 @@
       },
       keyChange() {
         if (this.page.id) {
+          this.page.cur = 1
           this.init()
         }
       },
@@ -133,6 +134,7 @@
           this.page.endTime = ''
         }
         if (this.page.id) {
+          this.page.cur = 1
           this.init()
         }
       },

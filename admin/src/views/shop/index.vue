@@ -192,6 +192,7 @@
         } else {
           this.page.cityId = val[val.length - 1]
         }
+        this.page.cur = 1
         this.init()
       },
       check(createTime, banTime) {

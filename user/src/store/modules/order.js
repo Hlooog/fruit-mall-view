@@ -1,5 +1,5 @@
 import Vue from 'vue'
-import de from "element-ui/src/locale/lang/de";
+
 const state = sessionStorage.getItem('state') ? JSON.parse(sessionStorage.getItem('state')).order :{
   data: {}
 }

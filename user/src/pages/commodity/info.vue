@@ -104,14 +104,14 @@
       </el-card>
       <ul>
         <span v-if="cur === 1 && commentList.length === 0" style="width:120px; margin-left: 40%">下一单写个评论吧</span>
-        <li v-else style="list-style: none;" v-for="(item,index) in commentList" :key="index">
+        <li v-else style="list-style: none; height: 120px" v-for="(item,index) in commentList" :key="index">
           <el-row style="overflow:auto;">
             <el-col :span="2">
               <el-avatar style="width: 60px; height: 60px;" :src="item.avatar"></el-avatar>
             </el-col>
             <el-col :span="14">
               <el-row style="height: 20px">
-                <span>{{item.name}}</span>
+                <span>{{item.nickname}}</span>
                 <span style="float: right" v-if="item.score >= 4">好评</span>
                 <span style="float: right" v-else-if="item.score >= 2">中评</span>
                 <span style="float: right" v-else>差评</span>
@@ -125,7 +125,7 @@
               <div style="width: 150px; margin: 0 auto">
                 <div><span class="mySpan">规格:</span> {{item.specification}}</div>
                 <div><span class="mySpan">重量/kg:</span> {{item.weight}}</div>
-                <div><span class="mySpan">数量:</span> {{item.num}}}</div>
+                <div><span class="mySpan">数量:</span> {{item.num}}</div>
               </div>
             </el-col>
           </el-row>
