@@ -131,13 +131,14 @@
       submit(valid){
         this.$refs[valid].validate((validation) => {
           if (validation) {
-            shop.CreateOrUpdate(this.info).then(() => {
+            shop.CreateOrUpdate(this.info).then(response => {
               this.$message({
                 type: 'success',
                 message: '修改成功'
               })
-              if (this.create == 0){
-                this.$store.commit('user/SET_CREATE',1)
+              if (this.shop_id == 0){
+                this.$store.commit('user/SET_SHOP_ID',response.data)
+                this.info.id = response.data
               }
             })
           } else {

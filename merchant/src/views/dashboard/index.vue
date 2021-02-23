@@ -307,7 +307,7 @@
   }
 
   .ic {
-    height: 180px;
+    height: 220px;
     width: 80%;
     text-align: center;
     color: #409EFF;

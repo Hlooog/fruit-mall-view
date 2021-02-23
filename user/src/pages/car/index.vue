@@ -251,13 +251,11 @@
             this.shopCheckNum[index] = 0
           }
           this.shopCheckNum[index] += 1
-          let mul = accMul(price, quantity)
-          this.price = accAdd(this.price, mul)
+          this.price = accAdd(this.price, accMul(price, quantity))
         } else {
           this.num -= 1
           this.shopCheckNum[index] -= 1
-          let mul = accMul(price, quantity)
-          this.price = subtr(this.price, mul)
+          this.price = subtr(this.price, accMul(price, quantity))
         }
         if (this.num == this.checkNum) {
           this.isAll = true
@@ -298,7 +296,6 @@
         if (this.list[index].length === 1) {
           this.list[index] = []
           delete this.list[index]
-          console.log(this.list)
         } else {
           let j = 0
           for (let i = 0; i < this.list[index].length; i++) {

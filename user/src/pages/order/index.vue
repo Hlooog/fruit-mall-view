@@ -157,13 +157,10 @@
     },
     created() {
       this.init()
-
     },
     computed: {
       ...mapGetters([
         'data',
-        'id',
-        'avatar',
       ])
     },
     data() {
@@ -242,7 +239,7 @@
       },
       toInfo(id) {
         this.$router.push({path: '/commodity/info', query: {id: id}})
-      }
+      },
     },
   }
 </script>

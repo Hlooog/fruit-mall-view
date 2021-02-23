@@ -54,13 +54,14 @@ const actions = {
     return new Promise((resolve, reject) => {
       login({ phone: phone.trim(), password: password }).then(response => {
         const { data } = response
+        console.log(data)
         commit('SET_TOKEN', data.token)
         commit('SET_ID', data.id)
         commit('SET_NAME', data.name)
         commit('SET_AVATAR', data.avatar)
         commit('SET_PHONE',data.phone)
         commit('SET_SHOP_ID',data.shop_id)
-        if (data.create === 0) {
+        if (data.shop_id === 0) {
           router.push("/shop/index")
         }
         setToken(data.token)
