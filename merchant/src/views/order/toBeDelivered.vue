@@ -21,6 +21,7 @@
 
       <el-col :span="6">
         <el-button type="text" style="margin: 30px 15%" @click="exportData">导出数据</el-button>
+        <el-button type="text" style="margin: 30px 0%" @click="showBulkShip">批量发货</el-button>
       </el-col>
     </el-row>
 
@@ -74,6 +75,22 @@
       <el-input style="width: 220px" v-model="trackNumber"></el-input>
       <el-button type="primary" style="margin-left: 10%" @click="submit">确认</el-button>
     </el-dialog>
+
+    <el-dialog width="30%" :visible.sync="shipVisible">
+      <el-upload
+        class="upload-demo"
+        drag
+        :on-success="shipSuccess"
+        action="/fruit-mall/orders/bulk/ship"
+        :headers="header">
+        <i class="el-icon-upload"></i>
+        <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
+        <div class="el-upload__tip" slot="tip" style="color: red;
+        font-weight: bold;
+        font-size: 18px;
+        ">请在导出的Excel表中填写对应行的快递单号</div>
+      </el-upload>
+    </el-dialog>
   </div>
 </template>
 
@@ -87,11 +104,13 @@
     created() {
       this.page.shopId = this.shop_id
       this.init()
+      this.header["X-Token"] = this.token
     },
 
     computed: {
       ...mapGetters([
-        'shop_id'
+        'shop_id',
+        'token'
       ])
     },
 
@@ -110,7 +129,11 @@
         total: 10,
         visible: false,
         id: 0,
-        trackNumber: ''
+        trackNumber: '',
+        shipVisible: false,
+        header: {
+          'X-Token': '',
+        }
       }
     },
     methods: {
@@ -167,6 +190,18 @@
         order.exportData(this.page).then(response => {
           window.location.href = response.data
         })
+      },
+      showBulkShip(){
+        this.shipVisible = true
+      },
+      shipSuccess() {
+        this.shipVisible = false
+        this.$message({
+          type: 'success',
+          message: '批量发货成功',
+          duration: 3000,
+        })
+        this.init()
       }
     }
   }
