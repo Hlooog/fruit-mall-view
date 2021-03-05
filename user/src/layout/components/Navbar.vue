@@ -1,63 +1,36 @@
 <template>
   <div>
-    <div style="background:#F5F5F5; height: 35px">
-      <ul id="menu">
-        <li v-if="id" style="margin-top: 8px; width: 100px">
-          <el-dropdown>
-            <span style="color: #409EFF">
-              {{name}}<i class="el-icon-arrow-down el-icon--right"></i>
-            </span>
-            <el-dropdown-menu slot="dropdown">
-              <el-dropdown-item>
-                <el-avatar :src="avatar"/>
-              </el-dropdown-item>
-              <el-dropdown-item @click.native="toUser">账号管理</el-dropdown-item>
-              <el-dropdown-item @click.native="logout">退出登录</el-dropdown-item>
-            </el-dropdown-menu>
-          </el-dropdown>
-        </li>
-        <li v-else style="width: 100px">
-          <el-button type="text" style="margin-left: 15px" @click="toLogin">请登录 /</el-button>
-          <el-button type="text" style="margin-left: -5px" @click="toRegister">注册</el-button>
-        </li>
-        <li>
-          <el-button type="text" style="margin-left: 460px;" @click="toHome">首页</el-button>
-        </li>
-        <li>
-          <el-button type="text" style="margin-left: 25px;" @click="toCommodity">更多商品</el-button>
-        </li>
-        <li>
-          <el-button type="text" style="margin-left: 25px;" @click="toShop">所有商家</el-button>
-        </li>
-        <li>
-          <el-button type="text" style="margin-left: 25px;" @click="toOrder">我的订单</el-button>
-        </li>
-        <li>
-          <el-button type="text" style="margin-left: 25px;" @click="toCar">我的购物车</el-button>
-        </li>
-        <li>
-          <el-button type="text" style="margin-left: 25px;" @click="showKeep">我的收藏</el-button>
-        </li>
-        <li>
-          <el-button type="text" style="margin-left: 25px;" @click="toMerchant">卖家中心</el-button>
-        </li>
-        <li style="margin-top: 8px; margin-left: 10px">
-          <el-dropdown>
-            <span style="color: #409EFF">
-              申请开店<i class="el-icon-arrow-down el-icon--right"></i>
-            </span>
-            <el-dropdown-menu slot="dropdown">
-              <el-dropdown-item @click.native="toApply">申请</el-dropdown-item>
-              <el-dropdown-item @click.native="show">查看申请状态</el-dropdown-item>
-            </el-dropdown-menu>
-          </el-dropdown>
-        </li>
-        <li>
-          <el-button type="text" style="margin-left: 25px;" @click="toService">联系客服</el-button>
-        </li>
-      </ul>
-    </div>
-    <div class="line"></div>
+    <el-menu
+      :default-active="activeIndex"
+      class="el-menu-demo"
+      mode="horizontal"
+      background-color="#545c64"
+      text-color="#fff"
+      active-text-color="#ffd04b">
+      <el-submenu v-if="id" index="1">
+        <template slot="title">
+          <el-avatar :src="avatar"/>
+        </template>
+        <el-menu-item @click="toUser" index="1-1">账号管理</el-menu-item>
+        <el-menu-item @click="logout" index="1-2">退出登录</el-menu-item>
+      </el-submenu>
+      <el-menu-item v-if="!id" @click="toLogin" index="2">登录</el-menu-item>
+      <el-menu-item v-if="!id" @click="toRegister" index="3">注册</el-menu-item>
+      <el-menu-item style="margin-left: 15%" index="4" @click="toHome">首页</el-menu-item>
+      <el-menu-item index="5" @click="toCommodity">更多商品</el-menu-item>
+      <el-menu-item index="6" @click="toShop">所有商家</el-menu-item>
+      <el-menu-item index="7" @click="toOrder">我的订单</el-menu-item>
+      <el-menu-item index="8" @click="toCar">我的购物车</el-menu-item>
+      <el-menu-item index="9" @click="showKeep">我的收藏</el-menu-item>
+      <el-menu-item index="10" @click="toMerchant">卖家中心</el-menu-item>
+      <el-menu-item index="11" @click="showKeep">我的收藏</el-menu-item>
+      <el-submenu index="12">
+        <template slot="title">申请开店</template>
+        <el-menu-item @click="toApply" index="12-1">申请</el-menu-item>
+        <el-menu-item @click="show" index="12-2">查看申请状态</el-menu-item>
+      </el-submenu>
+      <el-menu-item index="13" @click="toService">联系客服</el-menu-item>
+    </el-menu>
 
     <el-dialog
       :visible.sync="applyVisible"
@@ -98,7 +71,7 @@
         </el-table-column>
       </el-table>
       <el-pagination
-        style="margin: 0 auto; min-width: 100px"
+        style="text-align: center"
         :current-page.sync="cur"
         @current-change="getKeepList"
         layout="prev, pager, next"
@@ -132,6 +105,7 @@
         total: 10,
         cur: 1,
         keepVisible: false,
+        activeIndex: '0',
       }
     },
     methods: {
@@ -214,18 +188,18 @@
               break
             }
           }
-          this.keepList.splice(index,1)
+          this.keepList.splice(index, 1)
         })
       },
-      toCar(){
+      toCar() {
         this.$router.push('/car/index')
       },
-      toOrder(){
+      toOrder() {
         this.$router.push('/order/index')
       },
-      toShop(){
+      toShop() {
         this.$router.push("/shop/index")
-      }
+      },
     }
   }
 </script>

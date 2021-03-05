@@ -39,7 +39,7 @@ service.interceptors.response.use(
                 type: 'error',
                 duration: 5 * 1000
             })
-            if (res.code === 10005){
+          if (res.code === 10005 || res.code === 10025){
                 store.dispatch('user/resetToken')
                 router.push("/login?redirect="+router.currentRoute.fullPath)
             }

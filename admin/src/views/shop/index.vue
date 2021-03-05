@@ -98,8 +98,7 @@
 
     <el-row style="width: 100%">
       <el-pagination
-        style="margin-left: 30%"
-        background
+        style="margin-top: 20px; text-align: center"
         :current-page.sync="page.cur"
         @current-change="init"
         layout="prev, pager, next"

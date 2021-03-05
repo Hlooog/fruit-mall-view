@@ -131,13 +131,6 @@
 
   export default {
     name: "index",
-    beforeRouteEnter(to, from, next) {
-      next(vm => {
-        if (!vm.$store.getters.id) {
-          vm.$router.push('/login?redirect=' + vm.$router.currentRoute.fullPath)
-        }
-      })
-    },
     created() {
       this.init()
     },

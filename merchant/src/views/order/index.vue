@@ -13,6 +13,7 @@
           v-model="time"
           type="daterange"
           @change="timeChange"
+          value-format="yyyy-MM-dd"
           range-separator="至"
           start-placeholder="开始日期"
           end-placeholder="结束日期">
@@ -56,7 +57,7 @@
     </el-row>
     <el-row>
       <el-pagination
-        style="margin: 20px 40%"
+        style="margin-top: 20px; text-align: center"
         :current-page.sync="page.cur"
         layout="prev, pager, next"
         @current-change="init"

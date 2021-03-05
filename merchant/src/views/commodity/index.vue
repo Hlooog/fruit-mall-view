@@ -42,10 +42,9 @@
     </el-row>
     <el-row>
       <el-pagination
-        style="margin: 20px 40%"
-        :current-page="cur"
+        style="margin-top: 20px; text-align: center"
+        :current-page.sync="cur"
         @current-change="init"
-        background
         layout="prev, pager, next"
         :total="total">
       </el-pagination>
@@ -262,6 +261,7 @@
           if (v) {
             commodity.update(this.commodity).then(() => {
               this.showCEdit = false
+              this.init()
             })
           } else {
             return false

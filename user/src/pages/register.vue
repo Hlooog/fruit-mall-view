@@ -5,17 +5,18 @@
                   border-radius: 30px;
                   margin: 40px auto;
                   box-shadow: 0 2px 4px">
-      <h1 style="margin-left: 35%;color: #909399">用户注册</h1>
+      <h1 style="text-align: center;color: #909399">用户注册</h1>
       <el-form style="width: 380px; margin: 0 auto" :model="registerForm" :rules="rules" ref="registerForm"
                label-width="100px">
         <el-form-item prop="avatar" v-if="!registerForm.uuid">
           <el-upload
             class="avatar-uploader"
+            style="text-align: center; width: 170px"
             action="http://localhost:8003/fruit-mall/oss/upload"
             :show-file-list="false"
             :on-success="success"
             :before-upload="beforeAvatarUpload">
-            <el-avatar v-if="registerForm.avatar" :src="registerForm.avatar"></el-avatar>
+            <el-avatar v-if="registerForm.avatar" :src="registerForm.avatar" class="avatar"></el-avatar>
             <i v-else class="el-icon-plus avatar-uploader-icon"></i>
           </el-upload>
         </el-form-item>
@@ -46,8 +47,8 @@
 </template>
 
 <script>
-  import user from "../../api/user";
-  import {setToken} from "../../utils/auth";
+  import user from "../api/user";
+  import {setToken} from "../utils/auth";
 
   export default {
     name: "register",
@@ -177,7 +178,6 @@
     width: 100px;
     height: 100px;
     line-height: 100px;
-    text-align: center;
   }
   .avatar {
     width: 100px;

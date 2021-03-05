@@ -9,15 +9,15 @@
       @change="cityIdChange"
       clearable
       filterable></el-cascader>
-      <el-table :data="shopList" :show-header="false" @row-click="click">
-        <el-table-column prop="name"></el-table-column>
-        <el-table-column prop="description"></el-table-column>
-        <el-table-column prop="heat"></el-table-column>
-        <el-table-column prop="userName"></el-table-column>
-        <el-table-column prop="city"></el-table-column>
+      <el-table :data="shopList" @row-click="click">
+        <el-table-column prop="name" label="店铺名"></el-table-column>
+        <el-table-column prop="description" label="描述"></el-table-column>
+        <el-table-column prop="heat" label="收藏人数"></el-table-column>
+        <el-table-column prop="userName" label="店主"></el-table-column>
+        <el-table-column prop="city" label="所在城市"></el-table-column>
       </el-table>
       <el-pagination
-        style="margin: 20px 45%"
+        style="text-align: center; margin-top: 25px"
         :current-page.sync="page.cur"
         @current-change="init"
         layout="prev, pager, next"

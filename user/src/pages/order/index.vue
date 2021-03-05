@@ -131,7 +131,7 @@
       </el-input>
       <el-rate
         allow-half
-        style="margin: 15px 20px"
+        style="margin-top: 15px; text-align: center"
         v-model="comment.score"
         :texts="level"
         show-text>
@@ -148,13 +148,6 @@
 
   export default {
     name: "index",
-    beforeRouteEnter(to, from, next) {
-      next(vm => {
-        if (!vm.$store.getters.id) {
-          vm.$router.push('/login?redirect=' + vm.$router.currentRoute.fullPath)
-        }
-      })
-    },
     created() {
       this.init()
     },

@@ -24,7 +24,7 @@
     </el-row>
     <el-row>
       <el-pagination
-        style="margin: 35px 40%"
+        style="margin-top: 20px; text-align: center"
         :current-page.sync="page.cur"
         @current-change="init"
         background

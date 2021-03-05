@@ -118,7 +118,7 @@
               </el-row>
               <el-row style="margin-top: 20px">
                 <span>{{item.content}}</span>
-                <span style="float: right; font-size: 7px">{{item.createTime}}</span>
+                <span style="float: right; font-size: 15px">{{item.createTime}}</span>
               </el-row>
             </el-col>
             <el-col :span="8" style="font-size: 14px; height: 100%;">

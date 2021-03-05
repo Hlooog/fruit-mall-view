@@ -51,8 +51,8 @@
           </template>
         </el-table-column>
         <el-table-column label="快递单号" prop="trackNumber" width="150"></el-table-column>
-        <el-table-column label="下单时间" prop="createTime" width="120"></el-table-column>
-        <el-table-column label="订单状态" prop="statusStr" width="80"></el-table-column>
+        <el-table-column label="下单时间" prop="createTime" width="120"  fixed="right"></el-table-column>
+        <el-table-column label="订单状态" prop="statusStr" width="80"  fixed="right"></el-table-column>
         <el-table-column label="操作" width="100" fixed="right">
           <template slot-scope="scope">
             <el-button type="text" @click="fillIn(scope.row.id)">填写快递单号</el-button>
@@ -62,7 +62,7 @@
     </el-row>
     <el-row>
       <el-pagination
-        style="margin: 20px 40%"
+        style="margin-top: 20px; text-align: center"
         :current-page.sync="page.cur"
         layout="prev, pager, next"
         @current-change="init"
@@ -181,6 +181,11 @@
           }
           this.visible = false
           this.orderList.splice(index, 1)
+          this.$message({
+            type: 'success',
+            message: '发货成功',
+            duration: 1000,
+          })
         })
       },
       calPrice(price, quantity) {

@@ -32,7 +32,7 @@
                   </div>
                   <div>
                     <span style="color: #F40; font-weight: 700">￥{{c.price}}</span>
-                    <el-button v-if="c.up" type="danger" @click="offShelf(c.id)" style="margin-left: 15px" size="small">下架</el-button>
+                    <el-button v-if="!c.up" type="danger" @click="offShelf(c.id)" style="margin-left: 15px" size="small">下架</el-button>
                     <el-button v-else  disabled type="danger" style="margin-left: 15px" size="small">下架</el-button>
                   </div>
                 </div>

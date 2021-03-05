@@ -1,8 +1,9 @@
 <template>
   <div id="app">
-    <div style="margin-top: 5%">
+    <el-card style="margin: 3% auto; auto; width: 90%">
       <el-row>
-        <el-col :span="16">
+        <el-col :span="2" style="height: 1px"></el-col>
+        <el-col :span="12">
           <el-carousel height="400px" :loop="true">
             <el-carousel-item v-for="(item,index) in imgList" :key="index">
               <img style="width: 100%;
@@ -12,6 +13,7 @@
             </el-carousel-item>
           </el-carousel>
         </el-col>
+        <el-col :span="2" style="height: 1px"></el-col>
         <el-col :span="8">
           <div class="box" style="height: 300px; width: 380px; margin-left: 10%">
             <h1 style="color: #909399; text-align: center">本月热销</h1>
@@ -38,39 +40,41 @@
           </div>
         </el-col>
       </el-row>
-    </div>
-    <div style="margin-top: 5%">
-      <section>
-        <span style="color:#606266; margin-left: 4%">猜你喜欢</span>
-        <el-button type="text" style="margin-left: 85%" @click="toCommodity">更多>></el-button>
-        <el-divider></el-divider>
-        <ul>
-          <li style="list-style: none;
+      <div style="margin-top: 5%">
+        <section>
+          <span style="color:#606266; margin-left: 4%">猜你喜欢</span>
+          <el-button type="text" style="margin-left: 85%" @click="toCommodity">更多>></el-button>
+          <el-divider></el-divider>
+          <ul>
+            <li style="list-style: none;
                     float: left;
                     width: 12%;
                     margin-bottom: 10px;"
-              v-for="(c,index) in likeList" :key="index" @click="toInfo(c.id)">
-            <div>
+                v-for="(c,index) in likeList" :key="index" @click="toInfo(c.id)">
               <div>
-                <el-image
-                  style="width: 100px; height: 100px; border-radius: 5px;"
-                  :src="c.url"
-                  fit="fill"></el-image>
                 <div>
-                  <span>{{c.name}}</span>
-                </div>
-                <div>
-                  <span>所属种类： {{c.varietyName}}</span>
-                </div>
-                <div>
-                  <span style="color: #F40; font-weight: 700">￥{{c.price}}</span>
+                  <el-image
+                    style="width: 100px; height: 100px; border-radius: 5px;"
+                    :src="c.url"
+                    fit="fill"></el-image>
+                  <div>
+                    <span>{{c.name}}</span>
+                  </div>
+                  <div>
+                    <span>所属种类： {{c.varietyName}}</span>
+                  </div>
+                  <div>
+                    <span style="color: #F40; font-weight: 700">￥{{c.price}}</span>
+                  </div>
                 </div>
               </div>
-            </div>
-          </li>
-        </ul>
-      </section>
-    </div>
+            </li>
+          </ul>
+        </section>
+      </div>
+    </el-card>
+
+
     <!--<div style="margin-top: 5%">
       <section>
         <span style="color:#606266; margin-left: 4%">最近浏览</span>
@@ -82,7 +86,7 @@
 </template>
 
 <script>
-  import commodity from "../../api/commodity";
+  import commodity from "../api/commodity";
 
   export default {
     name: "index",

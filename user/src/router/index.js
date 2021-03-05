@@ -11,7 +11,7 @@ export const constantRoutes = [
     children: [
       {
         path: '/',
-        component: () => import('@/pages/home/index'),
+        component: () => import('@/pages/index'),
         meta: {title: '首页'}
       }
     ]
@@ -74,7 +74,7 @@ export const constantRoutes = [
     children: [
       {
         path: 'index',
-        component: ()=> import('@/pages/car/index'),
+        component: () => import('@/pages/car/index'),
         meta: {title: '购物车'}
       },
     ]
@@ -86,7 +86,7 @@ export const constantRoutes = [
     children: [
       {
         path: 'index',
-        component: ()=> import('@/pages/order/index'),
+        component: () => import('@/pages/order/index'),
         meta: {title: '我的订单'}
       },
     ]
@@ -98,7 +98,7 @@ export const constantRoutes = [
     children: [
       {
         path: 'index',
-        component: ()=> import('@/pages/pay/index'),
+        component: () => import('@/pages/pay/index'),
         meta: {title: '支付'}
       },
     ]
@@ -110,7 +110,7 @@ export const constantRoutes = [
     children: [
       {
         path: 'index',
-        component: ()=> import('@/pages/shop/index'),
+        component: () => import('@/pages/shop/index'),
         meta: {title: '商家'}
       },
       {
@@ -123,13 +123,25 @@ export const constantRoutes = [
 
   {
     path: '/login',
-    component: () => import('@/pages/login/index'),
-    meta: {title: '登录'}
+    component: layout,
+    children: [
+      {
+        path: '/',
+        component: () => import('@/pages/login'),
+        meta: {title: '登录'}
+      }
+]
   },
   {
     path: '/register',
-    component: () => import('@/pages/login/register'),
-    meta: {title: '注册'}
+    component: layout,
+    children: [
+      {
+        path: '/',
+        component: () => import('@/pages/register'),
+        meta: {title: '注册'}
+      }
+    ]
   }
 ]
 

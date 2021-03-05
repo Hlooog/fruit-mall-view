@@ -5,7 +5,7 @@
                 border-radius: 30px;
                 margin: 50px auto;
                 box-shadow: 0 2px 4px">
-      <h1 style="margin-left: 35%;color: #909399">用户登录</h1>
+      <h1 style="text-align: center;color: #909399">用户登录</h1>
       <el-form style="width: 380px; margin: 0 auto"
                :model="loginForm" :rules="rules"
                ref="loginForm" label-width="100px">
@@ -35,8 +35,8 @@
 </template>
 
 <script>
-  import user from "../../api/user";
-  import {setToken} from '../../utils/auth'
+  import user from "../api/user";
+  import {setToken} from '../utils/auth'
   export default {
     name: "index",
     created() {
@@ -44,6 +44,7 @@
       if (id) {
         user.wxLogin(id).then(response => {
           const { data } = response
+          console.log(data)
           this.$store.commit('user/SET_TOKEN', data.token)
           this.$store.commit('user/SET_ID', data.id)
           this.$store.commit('user/SET_NAME', data.name)
