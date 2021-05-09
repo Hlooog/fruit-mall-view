@@ -269,7 +269,6 @@
         })
       },
       create(valid) {
-        console.log(this.commodity)
         this.$refs[valid].validate(v => {
           if (v) {
             this.commodity.shopId = this.shop_id
@@ -328,17 +327,23 @@
       },
       vChange(val) {
         if (val.constructor == String) {
-           commodity.insertVariety(val).then(res => {
-             let id = res.data
-             commodity.getVariety().then(response => {
-               this.variety = response.data
-               setTimeout(()=>{
-                 this.commodity.varietyId = id
-               }, 1000)
-             })
-           })
+          val = val.replace(/\s+/g, "")
+          const b = this.variety.filter(item => item.name === val)
+          if (!b.length) {
+            commodity.insertVariety(val).then(res => {
+              let id = res.data
+              commodity.getVariety().then(response => {
+                this.variety = response.data
+                setTimeout(() => {
+                  this.commodity.varietyId = id
+                }, 1000)
+              })
+            })
+          } else {
+            this.commodity.varietyId = b[0].id
+          }
         }
-      }
+      },
     },
   }
 </script>

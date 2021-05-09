@@ -45,31 +45,51 @@
           <span style="color:#606266; margin-left: 4%">猜你喜欢</span>
           <el-button type="text" style="margin-left: 85%" @click="toCommodity">更多>></el-button>
           <el-divider></el-divider>
-          <ul>
+          <!--<ul>
             <li style="list-style: none;
                     float: left;
                     width: 12%;
                     margin-bottom: 10px;"
                 v-for="(c,index) in likeList" :key="index" @click="toInfo(c.id)">
+              <el-image
+                style="width: 100px; height: 100px; border-radius: 5px;"
+                :src="c.url"
+                fit="fill"></el-image>
               <div>
-                <div>
-                  <el-image
-                    style="width: 100px; height: 100px; border-radius: 5px;"
-                    :src="c.url"
-                    fit="fill"></el-image>
-                  <div>
-                    <span>{{c.name}}</span>
-                  </div>
-                  <div>
-                    <span>所属种类： {{c.varietyName}}</span>
-                  </div>
-                  <div>
-                    <span style="color: #F40; font-weight: 700">￥{{c.price}}</span>
-                  </div>
-                </div>
+                <span>{{c.name}}</span>
+              </div>
+              <div>
+                <span>所属种类： {{c.varietyName}}</span>
+              </div>
+              <div>
+                <span style="color: #F40; font-weight: 700">￥{{c.price}}</span>
               </div>
             </li>
-          </ul>
+          </ul>-->
+
+          <el-card style="float: left;
+                    width: 15%;
+                    margin-left: 7%;
+                    text-align: center;
+                    height: 230px;
+                    margin-bottom: 10px;"
+                   v-for="(c,index) in likeList" :key="index" @click="toInfo(c.id)">
+            <div  @click="toInfo(c.id)" style="cursor: pointer">
+            <el-image
+              style="width: 100px; height: 100px; border-radius: 5px;"
+              :src="c.url"
+              fit="fill"></el-image>
+            <div>
+              <span>{{c.name}}</span>
+            </div>
+            <div>
+              <span>所属种类： {{c.varietyName}}</span>
+            </div>
+            <div>
+              <span style="color: #F40; font-weight: 700">￥{{c.price}}</span>
+            </div>
+            </div>
+          </el-card>
         </section>
       </div>
     </el-card>
@@ -113,7 +133,7 @@
         })
       },
 
-      getLike(){
+      getLike() {
         commodity.getLike().then(response => {
           this.likeList = response.data
         })

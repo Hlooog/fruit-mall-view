@@ -67,14 +67,14 @@
       width="40%">
       <el-form :model="withdraw" label-width="160px" ref="withdraw" :rules="rules">
         <el-form-item prop="account" label="提现账户">
-          <el-input style="width: 160px" v-model.number="withdraw.account" placeholder="请输入银行卡号"></el-input>
+          <el-input style="width: 160px" v-model="withdraw.account" placeholder="请输入银行卡号"></el-input>
         </el-form-item>
         <el-form-item prop="amount" label="需要提现金额">
-          <el-input style="width: 160px" v-model.number="withdraw.amount"
+          <el-input style="width: 160px" v-model="withdraw.amount"
                     :placeholder="'最多可提现'+balance.withdrawAble + '元'"></el-input>
         </el-form-item>
         <el-form-item prop="phone" label="手机号">
-          <el-input style="width: 160px" v-model.number=" withdraw.phone" placeholder='请输入手机号码'></el-input>
+          <el-input style="width: 160px" v-model=" withdraw.phone" placeholder='请输入手机号码'></el-input>
         </el-form-item>
         <el-form-item prop="code" label="验证码">
           <el-input style="width: 160px" v-model="withdraw.code" placeholder="请先获取验证码"></el-input>
@@ -100,6 +100,7 @@
       this.getBalance()
       this.showOrder()
       this.showPrice()
+      this.withdraw.shopId = this.shop_id
     },
     data() {
       const validatePrice = (rule, value, callback) => {
@@ -117,20 +118,20 @@
           lumpSum: 0.00
         },
         withdrawVisible: false,
-        withdraw: {},
+        withdraw: {
+          shopId: 0,
+          phone: '',
+        },
         rules: {
           account: [
             {required: true, message: '提现账户不能为空', trigger: 'blur'},
-            {type: 'number', message: '请输入正确的账户', trigger: 'blur'},
           ],
           amount: [
             {required: true, message: '提现金额不能为空', trigger: 'blur'},
-            {type: 'number', message: '金额不正确', trigger: 'blur'},
             {message: '请输入正确的金额', validator: validatePrice}
           ],
           phone: [
             {required: true, message: '手机号码不能为空', trigger: 'blur'},
-            {type: 'number', message: '手机号码格式不正确', trigger: 'blur'}
           ],
           code: [
             {required: true, message: '验证码不能为空', trigger: 'blur'},
@@ -146,7 +147,7 @@
     },
     computed:{
       ...mapGetters([
-        'shop_id'
+        'shop_id',
       ])
     },
     methods: {
@@ -184,6 +185,11 @@
             balance.withdraw(this.withdraw).then(()=> {
               this.getBalance()
               this.withdrawVisible = false
+              this.$message({
+                type: 'success',
+                message: '申请提现成功',
+                duration: 1000,
+              })
             })
           } else {
             return false

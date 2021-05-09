@@ -54,7 +54,7 @@
         style="margin-top: 20px; text-align: center"
         layout="prev, pager, next"
         :total="total"
-        :current-page="page.cur"
+        :current-page.sync="page.cur"
         @current-change="init">
       </el-pagination>
     </el-row>

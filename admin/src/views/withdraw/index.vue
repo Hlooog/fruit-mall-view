@@ -55,7 +55,6 @@
         style="margin-top: 20px; text-align: center"
         :current-page.sync="page.cur"
         @current-change="init"
-        background
         layout="prev, pager, next"
         :total="total">
       </el-pagination>
@@ -98,8 +97,6 @@
     },
     methods: {
       init() {
-        this.list = []
-        this.total = 0
         if (this.page.phone.trim() != '') {
           withdraw.page(this.page).then(response => {
             if (response.data != null) {

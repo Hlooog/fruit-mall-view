@@ -13,29 +13,38 @@
       </div>
 
       <el-divider></el-divider>
-      <div class="box">
+      <!--<div class="box">
         <ul>
           <li v-for="(c,index) in commodityList" :key="index" @click="toInfo(c.id)">
             <div>
-              <div>
-                <el-image
-                  style="width: 100px; height: 100px"
-                  :src="c.url"
-                  fit="fill"></el-image>
-                <div>
-                  <span>{{c.name}}</span>
-                </div>
-                <div>
-                  <span>所属种类： {{c.varietyName}}</span>
-                </div>
-                <div>
-                  <span style="color: #F40; font-weight: 700">￥{{c.price}}</span>
-                </div>
-              </div>
-            </div>
-          </li>
-        </ul>
-      </div>
+              <div>-->
+      <el-card style="float: left;
+                    width: 17%;
+                    margin-left: 7%;
+                    text-align: center;
+                    height: 230px;
+                    margin-bottom: 10px;"
+               v-for="(c,index) in commodityList" :key="index" @click="toInfo(c.id)">
+        <div @click="toInfo(c.id)" style="cursor: pointer">
+          <el-image
+            style="width: 100px; height: 100px"
+            :src="c.url"
+            fit="fill"></el-image>
+          <div>
+            <span>{{c.name}}</span>
+          </div>
+          <div>
+            <span>所属种类： {{c.varietyName}}</span>
+          </div>
+          <div>
+            <span style="color: #F40; font-weight: 700">￥{{c.price}}</span>
+          </div>
+        </div>
+      </el-card>
+      <!--</div>
+    </li>
+  </ul>
+</div>-->
     </el-card>
   </div>
 </template>
@@ -43,13 +52,14 @@
 <script>
   import {mapGetters} from 'vuex'
   import shop from "../../api/shop";
+
   export default {
     name: "info",
     created() {
       this.id = this.$route.query.id
       this.init()
     },
-    data(){
+    data() {
       return {
         id: 0,
         commodityList: []
@@ -61,12 +71,12 @@
       ])
     },
     methods: {
-      init(){
+      init() {
         shop.list(this.id).then(response => {
           this.commodityList = response.data
         })
       },
-      fallBack(){
+      fallBack() {
         this.$router.push('/shop/index')
       },
       toInfo(id) {

@@ -12,9 +12,9 @@
         </el-select>
       </el-col>
       <el-col :span="6">
-        <el-input v-model.number="page.id"
+        <el-input v-model="page.id"
                   style="width: 220px; margin: 30px 15%"
-                  placeholder="请先输入id"
+                  placeholder="可以输入"
                   @change="keyChange"></el-input>
       </el-col>
       <el-col :span="10">
@@ -103,7 +103,7 @@
         options: [
           {
             type: 0,
-            value: '用户id'
+            value: '用户id/订单id'
           },
           {
             type: 1,

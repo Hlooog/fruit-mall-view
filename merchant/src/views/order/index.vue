@@ -2,9 +2,9 @@
   <div>
     <el-row>
       <el-col :span="6">
-        <el-input v-model.number="page.userId"
+        <el-input v-model="page.userId"
                   style="width: 220px; margin: 30px 15%"
-                  placeholder="可以搜索用户id"
+                  placeholder="可以搜索用户id或者订单id"
                   @change="keyChange"></el-input>
       </el-col>
       <el-col :span="10">
@@ -119,9 +119,6 @@
         this.init()
       },
       keyChange() {
-        if (typeof (this.page.userId) !== 'number') {
-          this.page.userId = ''
-        }
         this.page.cur = 1
         this.init()
       },

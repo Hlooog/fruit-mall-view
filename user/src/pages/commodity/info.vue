@@ -133,7 +133,7 @@
       </ul>
 
       <el-pagination
-        style="float: right; margin-top: 15px"
+        style="text-align: center; margin-top: 15px"
         layout="prev, pager, next"
         :current-page.sync="cur"
         @current-change="initComment"

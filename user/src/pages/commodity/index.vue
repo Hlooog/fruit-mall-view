@@ -1,7 +1,7 @@
 <template>
   <div>
     <div>
-      <el-card style="width: 950px; margin: 0 auto">
+      <el-card style="width: 950px; margin: 3% auto">
         <span style="color: #606266">所有分类></span>
         <el-checkbox-group v-model="data.select" style="width: 900px;">
           <el-checkbox v-for="(item,index) in varietyList" :label="item.id" :key="index">
@@ -30,30 +30,33 @@
         </div>
         <el-divider></el-divider>
         <div class="box">
-          <ul>
-            <span v-if="!loading && commodityList.length === 0" style="width:500px;margin-left: 40%">暂无该分类商品，请选择其他分类</span>
-            <li v-else v-for="(c,index) in commodityList" :key="index" @click="toInfo(c.id)">
-              <div>
+          <span v-if="!loading && commodityList.length === 0"
+                style="width:500px;margin-left: 40%">暂无该分类商品，请选择其他分类</span>
+          <el-card v-else style="float: left;
+                    width: 20%;
+                    margin-left: 3%;
+                    text-align: center;
+                    height: 230px;
+                    margin-bottom: 10px;"
+                   v-for="(c,index) in commodityList" :key="index">
+            <div  @click="toInfo(c.id)" style="cursor: pointer">
+                <el-image
+                  style="width: 100px; height: 100px"
+                  :src="c.url"
+                  fit="fill"></el-image>
                 <div>
-                  <el-image
-                    style="width: 100px; height: 100px"
-                    :src="c.url"
-                    fit="fill"></el-image>
-                  <div>
-                    <span>{{c.name}}</span>
-                  </div>
-                  <div>
-                    <span>所属种类： {{c.varietyName}}</span>
-                  </div>
-                  <div>
-                    <span style="color: #F40; font-weight: 700">￥{{c.price}}</span>
-                  </div>
+                  <span>{{c.name}}</span>
                 </div>
-              </div>
-            </li>
-          </ul>
-          <p v-if="loading" style="margin-left: 50%" class="el-icon-loading"></p>
-          <p v-if="this.data.cur === -1 && this.commodityList.length > 0" style="margin: 0 auto; width: 80px">没有更多了</p>
+                <div>
+                  <span>所属种类： {{c.varietyName}}</span>
+                </div>
+                <div>
+                  <span style="color: #F40; font-weight: 700">￥{{c.price}}</span>
+                </div>
+            </div>
+          </el-card>
+         <!-- <div v-if="loading" style="margin-left: 50%" class="el-icon-loading"></div>
+          <div v-if="this.data.cur === -1 && this.commodityList.length > 0" style="margin: 0 auto; width: 80px">没有更多了</div>-->
         </div>
       </el-card>
     </div>

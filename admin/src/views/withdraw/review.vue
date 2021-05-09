@@ -9,15 +9,16 @@
       </el-col>
     </el-row>
     <el-row>
-      <el-table :data="list" style="width: 65%; margin-left: 18%">
+      <el-table :data="list" style="width: 80%; margin-left: 10%">
         <el-table-column prop="phone" label="手机号码" width="140"></el-table-column>
+        <el-table-column prop="shopId" label="商户id" width="140"></el-table-column>
         <el-table-column prop="account" label="提现银行账户" width="200"></el-table-column>
         <el-table-column prop="amount" label="提现金额(元)" width="120"></el-table-column>
         <el-table-column prop="createTime" label="创建时间" width="160"></el-table-column>
-        <el-table-column label="状态" width="120">
+        <el-table-column label="操作" width="120">
           <template slot-scope="scope">
-            <el-button type="text" @click="makeMoney(scope.row.id,scope.row.phone)">打款</el-button>
-            <el-button type="text" @click="refuse(scope.row.id,scope.row.phone)">拒绝</el-button>
+            <el-button type="text" @click="makeMoney(scope.row.id,scope.row.shopId,scope.row.phone)">打款</el-button>
+            <el-button type="text" @click="refuse(scope.row.id,scope.row.shopId,scope.row.phone)">拒绝</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -68,8 +69,8 @@
         this.page.cur = 1;
         this.init()
       },
-      makeMoney(id,phone) {
-        withdraw.review(id,phone).then(()=>{
+      makeMoney(id,shopId,phone) {
+        withdraw.review(id,shopId,phone).then(()=>{
           this.$message({
             type: 'success',
             message: '打款成功'
@@ -82,8 +83,8 @@
           })
         })
       },
-      refuse(id,phone) {
-        withdraw.refuse(id,phone).then(()=>{
+      refuse(id,shopId,phone) {
+        withdraw.refuse(id,shopId,phone).then(()=>{
           this.$message({
             type: 'error',
             message: '已拒绝'

@@ -14,22 +14,24 @@ export default {
       }
     })
   },
-  review(id,phone){
+  review(id,shopId,phone){
     return request({
       url: '/withdraw/review',
       method: 'put',
       params: {
         id: id,
+        shopId: shopId,
         phone: phone
       }
     })
   },
-  refuse(id,phone){
+  refuse(id,shopId,phone){
     return request({
       url: '/withdraw/refuse',
       method: 'put',
       params: {
         id: id,
+        shopId: shopId,
         phone: phone
       }
     })
