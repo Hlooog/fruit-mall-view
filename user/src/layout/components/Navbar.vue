@@ -16,14 +16,13 @@
       </el-submenu>
       <el-menu-item v-if="!id" @click="toLogin" index="2">登录</el-menu-item>
       <el-menu-item v-if="!id" @click="toRegister" index="3">注册</el-menu-item>
-      <el-menu-item style="margin-left: 15%" index="4" @click="toHome">首页</el-menu-item>
+      <el-menu-item style="margin-left: 25%" index="4" @click="toHome">首页</el-menu-item>
       <el-menu-item index="5" @click="toCommodity">更多商品</el-menu-item>
       <el-menu-item index="6" @click="toShop">所有商家</el-menu-item>
       <el-menu-item index="7" @click="toOrder">我的订单</el-menu-item>
       <el-menu-item index="8" @click="toCar">我的购物车</el-menu-item>
       <el-menu-item index="9" @click="showKeep">我的收藏</el-menu-item>
       <el-menu-item index="10" @click="toMerchant">卖家中心</el-menu-item>
-      <el-menu-item index="11" @click="showKeep">我的收藏</el-menu-item>
       <el-submenu index="12">
         <template slot="title">申请开店</template>
         <el-menu-item @click="toApply" index="12-1">申请</el-menu-item>

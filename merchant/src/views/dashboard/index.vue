@@ -55,10 +55,24 @@
       </el-col>
     </el-row>
 
-    <h1 style="margin-left: 40%;">订单数据</h1>
+    <h1 style="text-align: center">水果销量</h1>
+    <el-row>
+      <div id="sales" style="width: 100%; min-height: 500px"></div>
+      <div style="height: 20px"></div>
+      <el-select v-model="commodityId" placeholder="请选择水果" @change="idChange">
+        <el-option
+          v-for="item in fruit"
+          :key="item.id"
+          :label="item.name"
+          :value="item.id">
+        </el-option>
+      </el-select>
+      <div id="oneSales" style="width: 100%; min-height: 500px"></div>
+    </el-row>
+
+    <h1 style="text-align: center">订单数据</h1>
     <el-row style="margin-top: 55px">
       <div id="order" style="width: 100%; min-height: 500px"></div>
-
       <div id="price" style="width: 100%; min-height: 500px"></div>
     </el-row>
     <el-dialog
@@ -93,6 +107,7 @@
   import balance from "@/api/balance";
   import {mapGetters} from 'vuex';
   import order from "@/api/order";
+  import commodity from "@/api/commodity";
 
   export default {
     name: 'Dashboard',
@@ -100,6 +115,8 @@
       this.getBalance()
       this.showOrder()
       this.showPrice()
+      this.showSales()
+      this.initFruit()
       this.withdraw.shopId = this.shop_id
     },
     data() {
@@ -143,9 +160,15 @@
         oy: [],
         px: [],
         py: [],
+        sx: [],
+        sy: [],
+        osx: [],
+        osy: [],
+        fruit: [],
+        commodityId: '',
       }
     },
-    computed:{
+    computed: {
       ...mapGetters([
         'shop_id',
       ])
@@ -179,10 +202,10 @@
           }, 1000)
         }
       },
-      submit(valid){
+      submit(valid) {
         this.$refs[valid].validate((v) => {
           if (v) {
-            balance.withdraw(this.withdraw).then(()=> {
+            balance.withdraw(this.withdraw).then(() => {
               this.getBalance()
               this.withdrawVisible = false
               this.$message({
@@ -197,7 +220,7 @@
         })
       },
 
-      showOrder(){
+      showOrder() {
         this.ox = []
         this.oy = []
         order.getNumberReport(this.shop_id).then(response => {
@@ -247,7 +270,7 @@
         oChart.setOption(option);
       },
 
-      showPrice(){
+      showPrice() {
         this.px = []
         this.py = []
         order.getPriceReport(this.shop_id).then(response => {
@@ -296,6 +319,111 @@
         // 使用刚指定的配置项和数据显示图表。
         oChart.setOption(option);
       },
+
+      showSales() {
+        this.sx = []
+        this.sy = []
+        commodity.getSales(this.shop_id).then(response => {
+          let list = response.data
+          for (let i = 0; i < list.length; i++) {
+            this.sx.push(list[i].name)
+            this.sy.push(list[i].sales)
+          }
+          this.salesChart()
+        })
+      },
+
+      salesChart() {
+        let sChart = this.$echarts.init(document.getElementById("sales"));
+        let option = {
+          title: {
+            text: "水果销量"
+          },
+          tooltip: {
+            trigger: 'axis'
+          },
+          toolbox: {
+            show: true,
+            feature: {
+              mark: {show: true},
+              dataView: {show: true, readOnly: true},
+              restore: {show: true},
+              saveAsImage: {show: true}
+            }
+          },
+          xAxis: {
+            name: '水果',
+            type: 'category',
+            data: this.sx
+          },
+          yAxis: {
+            name: '销量',
+          },
+          series: [
+            {
+              type: 'bar',
+              data: this.sy
+            },
+          ]
+        };
+        // 使用刚指定的配置项和数据显示图表。
+        sChart.setOption(option);
+      },
+
+      initFruit() {
+        commodity.getAllFruit(this.shop_id).then(response => {
+          this.fruit = response.data
+          console.log(this.fruit)
+        })
+      },
+      idChange() {
+        this.osx = []
+        this.osy = []
+        commodity.getOneSales(this.commodityId).then(response => {
+          let list = response.data
+          for (let i = 0; i < list.length; i++) {
+            this.osx.push(list[i].date)
+            this.osy.push(list[i].number)
+          }
+          this.oneFruitChart()
+        })
+      },
+      oneFruitChart() {
+        let oChart = this.$echarts.init(document.getElementById("oneSales"));
+        let option = {
+          title: {
+            text: "水果销量"
+          },
+          tooltip: {
+            trigger: 'axis'
+          },
+          toolbox: {
+            show: true,
+            feature: {
+              mark: {show: true},
+              dataView: {show: true, readOnly: true},
+              restore: {show: true},
+              saveAsImage: {show: true}
+            }
+          },
+          xAxis: {
+            name: '日期',
+            type: 'category',
+            data: this.osx
+          },
+          yAxis: {
+            name: '数量',
+          },
+          series: [
+            {
+              type: "line",
+              data: this.osy
+            },
+          ]
+        };
+        // 使用刚指定的配置项和数据显示图表。
+        oChart.setOption(option);
+      }
     }
   }
 </script>

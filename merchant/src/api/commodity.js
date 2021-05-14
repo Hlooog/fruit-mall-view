@@ -96,5 +96,23 @@ export default {
       url: '/commodity/info/get/' + id,
       method: 'get'
     })
+  },
+  getSales(id) {
+    return request({
+      url: '/commodity/sales/' + id,
+      method: 'get'
+    })
+  },
+  getAllFruit(id) {
+    return request({
+      url: '/commodity/all/fruit/' + id,
+      method: 'get',
+    })
+  },
+  getOneSales(id){
+    return request({
+      url: '/commodity/one/fruit/' + id,
+      method: 'get',
+    })
   }
 }
